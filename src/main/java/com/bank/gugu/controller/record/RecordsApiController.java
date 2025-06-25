@@ -5,6 +5,7 @@ import com.bank.gugu.domain.category.service.dto.request.CategoryUpdateRequest;
 import com.bank.gugu.domain.category.service.dto.response.CategoriesResponse;
 import com.bank.gugu.domain.record.service.RecordsService;
 import com.bank.gugu.domain.record.service.dto.request.RecordCreateRequest;
+import com.bank.gugu.domain.record.service.dto.request.RecordUpdateRequest;
 import com.bank.gugu.entity.common.constant.RecordType;
 import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.response.ApiResponse;
@@ -44,6 +45,17 @@ public class RecordsApiController {
             @PathVariable(name = "recordsId") Long recordsId
     ) {
         recordsService.deleteRecord(recordsId);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
+    @Operation(summary = "입/출금 내역 수정 API",
+            description = "입/출금 내역을 수정합니다.")
+    @PutMapping("/api/v1/user/records/{recordsId}")
+    public ResponseEntity<ApiResponse> updateRecord(
+            @Valid @RequestBody RecordUpdateRequest request,
+            @PathVariable(name = "recordsId") Long recordsId
+    ) {
+        recordsService.updateRecord(request, recordsId);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 

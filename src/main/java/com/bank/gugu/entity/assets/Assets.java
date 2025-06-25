@@ -73,7 +73,7 @@ public class Assets extends BaseEntity {
     }
 
     /**
-     * 입/출금 내역 삭제되 었을 경우 잔액 변경
+     * 입/출금 내역 삭제되었을 경우 토탈금액 변경
      */
     public void removeBalance(Records findRecord) {
         if (findRecord.getType().equals(RecordType.DEPOSIT)) {
@@ -81,5 +81,12 @@ public class Assets extends BaseEntity {
         } else if (findRecord.getType().equals(RecordType.WITHDRAW)) {
             this.balance = this.balance + findRecord.getPrice();
         }
+    }
+
+    /**
+     * 입/출금 내역 변경되었을 경우 토탈금액 변경
+     */
+    public void updateRecordBalance(Records findRecord, Records newEntity) {
+        this.balance = this.balance - findRecord.getPrice() + newEntity.getPrice();
     }
 }

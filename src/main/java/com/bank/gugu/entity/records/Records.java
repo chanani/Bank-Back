@@ -59,4 +59,31 @@ public class Records extends BaseEntity {
 
     @Column(name = "use_date")
     private LocalDate useDate;
+
+    /**
+     * 입/출금 내역 수정
+     */
+    public void update(Records newEntity) {
+        if (newEntity.category != null) {
+            this.category = newEntity.category;
+        }
+        if (newEntity.assets != null) {
+            this.assets = newEntity.assets;
+        }
+        if (newEntity.type != null) {
+            this.type = newEntity.type;
+        }
+        if (newEntity.price != null) {
+            this.price = newEntity.price;
+        }
+        if (newEntity.monthly != null) {
+            this.monthly = newEntity.priceType.equals(PriceType.CARD) ? newEntity.monthly : null;
+        }
+        if (newEntity.memo != null) {
+            this.memo = newEntity.memo;
+        }
+        if (newEntity.useDate != null) {
+            this.useDate = newEntity.useDate;
+        }
+    }
 }
