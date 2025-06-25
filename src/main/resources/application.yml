@@ -1,0 +1,69 @@
+server:
+  port: 11101
+  tomcat:
+    max-http-form-post-size: 1024MB
+    max-swallow-size: 1024MB
+
+spring:
+  application:
+    name: gugubank
+  profiles:
+    default: local
+
+  # security
+  security:
+    user:
+      name: user
+      password: asdf1234!@#
+
+  # multipart/form-data
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 100MB
+
+  jpa:
+    properties:
+      hibernate:
+        # batch fetch size
+        default_batch_fetch_size: 1000
+        format_sql: false
+    # OSIV
+    open-in-view: false
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: false
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+
+# log
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: app/logs
+  level:
+    p6spy: info
+    org.hibernate.SQL: off
+# jwt
+jwt:
+  secret-key: sale-2025-delivery+1004kksale-2025-delivery+1004kksale-2025-delivery+1014kk
+  issuer-uri: www.gugu-back.kr
+  accessToken-expired-time: 360000000
+  refreshToken-expired-time: 864000000
+
+# file path
+file:
+  path: /Users/ichanhan/Desktop/uploads/
+
+# swagger
+springdoc:
+  api-docs:
+    path: /gugu-bank/user/v3/api-docs
+  swagger-ui:
+    path: /gugu-bank/user/swagger-ui.html
+    url: /gugu-bank/user/v3/api-docs
