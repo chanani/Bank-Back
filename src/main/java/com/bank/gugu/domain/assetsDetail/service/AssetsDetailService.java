@@ -3,12 +3,10 @@ package com.bank.gugu.domain.assetsDetail.service;
 import com.bank.gugu.controller.assetsDetail.input.AssetsDetailsInput;
 import com.bank.gugu.domain.assetsDetail.service.request.AssetsDetailCreateRequest;
 import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailResponse;
+import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailsResponse;
 import com.bank.gugu.entity.user.User;
-import com.bank.gugu.global.page.Page;
 import com.bank.gugu.global.page.PageInput;
 import org.springframework.data.domain.Slice;
-
-import java.util.List;
 
 public interface AssetsDetailService {
 
@@ -32,5 +30,12 @@ public interface AssetsDetailService {
      * @param user 로그인 회원 객체
      * @return 무한스크롤된 자산 상세 정보
      */
-    Slice<AssetsDetailResponse> getAssetsDetails(PageInput pageInput, AssetsDetailsInput input, User user);
+    Slice<AssetsDetailsResponse> getAssetsDetails(PageInput pageInput, AssetsDetailsInput input, User user);
+
+    /**
+     * 자산 상세정보 조회
+     * @param assetsDetailId 자산 상세정보 식별자
+     * @return 자산 상세정보
+     */
+    AssetsDetailResponse getAssetsDetail(Long assetsDetailId);
 }

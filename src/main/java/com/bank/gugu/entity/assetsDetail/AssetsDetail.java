@@ -4,6 +4,7 @@ import com.bank.gugu.entity.BaseEntity;
 import com.bank.gugu.entity.assets.Assets;
 import com.bank.gugu.entity.common.constant.BooleanYn;
 import com.bank.gugu.entity.common.constant.RecordType;
+import com.bank.gugu.entity.records.Records;
 import com.bank.gugu.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,6 +35,10 @@ public class AssetsDetail extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assets_id")
     private Assets assets;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "record_id")
+    private Records record;
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)

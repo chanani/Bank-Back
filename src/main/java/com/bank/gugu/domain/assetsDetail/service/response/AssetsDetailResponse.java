@@ -14,7 +14,7 @@ public class AssetsDetailResponse {
     private Long id;
 
     @Schema(description = "타입")
-    private RecordType type;
+    private String type;
 
     @Schema(description = "금액")
     private Integer price;
@@ -30,7 +30,7 @@ public class AssetsDetailResponse {
 
     public AssetsDetailResponse(AssetsDetail assetsDetail) {
         this.id = assetsDetail.getId();
-        this.type = assetsDetail.getType();
+        this.type = assetsDetail.getType().getValue();
         this.price = assetsDetail.getPrice();
         this.balance = assetsDetail.getBalance();
         this.useDate = assetsDetail.getUseDate();

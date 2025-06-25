@@ -1,8 +1,11 @@
 package com.bank.gugu.entity.common.constant;
 
+import lombok.Getter;
+
 /**
  * 입/출금 타입
  */
+@Getter
 public enum RecordType {
     ALL("전체"),
     DEPOSIT("수입"),

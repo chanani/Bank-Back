@@ -2,11 +2,11 @@ package com.bank.gugu.domain.assetsDetail.service;
 
 import com.bank.gugu.controller.assetsDetail.input.AssetsDetailsInput;
 import com.bank.gugu.domain.assets.repository.AssetsRepository;
-import com.bank.gugu.domain.assets.service.request.AssetsCreateRequest;
 import com.bank.gugu.domain.assetsDetail.repository.AssetsDetailRepository;
 import com.bank.gugu.domain.assetsDetail.repository.condition.AssetsCondition;
 import com.bank.gugu.domain.assetsDetail.service.request.AssetsDetailCreateRequest;
 import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailResponse;
+import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailsResponse;
 import com.bank.gugu.entity.assets.Assets;
 import com.bank.gugu.entity.assetsDetail.AssetsDetail;
 import com.bank.gugu.entity.common.constant.BooleanYn;
@@ -14,7 +14,6 @@ import com.bank.gugu.entity.common.constant.StatusType;
 import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.exception.OperationErrorException;
 import com.bank.gugu.global.exception.dto.ErrorCode;
-import com.bank.gugu.global.page.Page;
 import com.bank.gugu.global.page.PageInput;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,26 +64,34 @@ public class DefaultAssetsDetailService implements AssetsDetailService {
     }
 
     @Override
-    public Slice<AssetsDetailResponse> getAssetsDetails(PageInput pageInput, AssetsDetailsInput input, User user) {
+    public Slice<AssetsDetailsResponse> getAssetsDetails(PageInput pageInput, AssetsDetailsInput input, User user) {
         // input -> condition
         AssetsCondition condition = input.toCondition();
         // 페이징 객체 생성
         Pageable pageable = Pageable.ofSize(pageInput.size() + 1).withPage(pageInput.page() - 1);
         // 자산 상세내역 조회
-        List<AssetsDetailResponse> assetsDetails = assetsDetailRepository.findByQuery(pageable, condition, user).stream()
-                .map(AssetsDetailResponse::new)
+        List<AssetsDetailsResponse> assetsDetails = assetsDetailRepository.findByQuery(pageable, condition, user).stream()
+                .map(AssetsDetailsResponse::new)
                 .toList();
         // 반환할 페이지 객체 생성
         Pageable returnPageable = pageable.withPage(pageInput.page());
         // Slice 객체 생성
-        Slice<AssetsDetailResponse> pointDetailSlice = new SliceImpl<>(assetsDetails, returnPageable, hasNextPage(assetsDetails, pageable.getPageSize()));
+        Slice<AssetsDetailsResponse> pointDetailSlice = new SliceImpl<>(assetsDetails, returnPageable, hasNextPage(assetsDetails, pageable.getPageSize()));
         return pointDetailSlice;
+    }
+
+    @Override
+    public AssetsDetailResponse getAssetsDetail(Long assetsDetailId) {
+        // 상세 정보 조회
+        AssetsDetail findAssetsDetail = assetsDetailRepository.findByIdAndStatus(assetsDetailId, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_ASSETS_DETAIL));
+        return new AssetsDetailResponse(findAssetsDetail);
     }
 
     /**
      * Slice에서 사용할 메서드
      */
-    private boolean hasNextPage(List<AssetsDetailResponse> pointDetails, int pageSize) {
+    private boolean hasNextPage(List<AssetsDetailsResponse> pointDetails, int pageSize) {
         if (pointDetails.size() > pageSize) {
             pointDetails.remove(pageSize);
             return true;

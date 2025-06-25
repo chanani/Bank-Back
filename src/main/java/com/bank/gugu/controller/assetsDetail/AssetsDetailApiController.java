@@ -1,14 +1,14 @@
 package com.bank.gugu.controller.assetsDetail;
 
 import com.bank.gugu.controller.assetsDetail.input.AssetsDetailsInput;
-import com.bank.gugu.domain.assets.service.request.AssetsCreateRequest;
 import com.bank.gugu.domain.assetsDetail.service.AssetsDetailService;
 import com.bank.gugu.domain.assetsDetail.service.request.AssetsDetailCreateRequest;
 import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailResponse;
+import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailsResponse;
 import com.bank.gugu.entity.user.User;
-import com.bank.gugu.global.page.Page;
 import com.bank.gugu.global.page.PageInput;
 import com.bank.gugu.global.response.ApiResponse;
+import com.bank.gugu.global.response.DataResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,18 +49,27 @@ public class AssetsDetailApiController {
     @Operation(summary = "자산 상세내역 목록 조회 API",
             description = """
                     자산 상세내역 목록을 조회합니다.
-                    무한스크롤로 제작되었으며, 
+                    무한스크롤로 제작되었으며, 요청한 사이즈보다 1개 더 반환됩니다.
+                    화면에서는 size 만큼 화면에 노출시키고, size 보다 1이클 때 다음 페이지를 요청해주세요.
                     """)
     @GetMapping("/api/v1/user/assets-details")
-    public ResponseEntity<Slice<AssetsDetailResponse>> getAssetsDetails(
+    public ResponseEntity<Slice<AssetsDetailsResponse>> getAssetsDetails(
             @Parameter(hidden = true) User user,
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @ParameterObject @ModelAttribute AssetsDetailsInput input
     ) {
         PageInput pageInput = PageInput.builder().page(page).size(size).build();
-        Slice<AssetsDetailResponse> assetsDetails = assetsDetailService.getAssetsDetails(pageInput, input, user);
+        Slice<AssetsDetailsResponse> assetsDetails = assetsDetailService.getAssetsDetails(pageInput, input, user);
         return ResponseEntity.ok(assetsDetails);
+    }
+
+    @Operation(summary = "자산 상세내역 조회 API",
+            description = "자산 상세내역 조회합니다.")
+    @GetMapping("/api/v1/user/assets-details/{assetsDetailId}")
+    public ResponseEntity<DataResponse<AssetsDetailResponse>> getAssetsDetail(@PathVariable(name = "assetsDetailId") Long assetsDetailId) {
+        AssetsDetailResponse assetsDetails = assetsDetailService.getAssetsDetail(assetsDetailId);
+        return ResponseEntity.ok(DataResponse.send(assetsDetails));
     }
 
     // todo 수정

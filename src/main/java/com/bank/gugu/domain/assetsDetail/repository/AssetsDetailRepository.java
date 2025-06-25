@@ -10,4 +10,6 @@ import java.util.Optional;
 
 public interface AssetsDetailRepository extends JpaRepository<AssetsDetail, Long>, AssetsDetailRepositoryCustom {
     Optional<AssetsDetail> findByIdAndStatus(Long assetsDetailId, StatusType statusType);
+
+    Optional<AssetsDetail> findByRecordIdAndStatus(Long id, StatusType statusType);
 }
