@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <jmxConfigurator />
+
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} %-4relative [%thread] %-5level %logger{35} - %msg%n" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) [%thread] %cyan(%logger{36}) - %msg%n
+            </pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <springProfile name="local">
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+        <root level="INFO">
+            <appender-ref ref="STDOUT" />
+        </root>
+
+        <logger name="com.bank.gugu" level="DEBUG" />
+        <logger name="org.apache" level="INFO" />
+        <logger name="org.springframework" level="INFO" />
+        <logger name="org.springframework.jdbc.core" level="DEBUG" />
+        <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="WARN" />
+
+        <logger name="io.lettuce" level="WARN" />
+        <logger name="com.zaxxer.hikari" level="WARN" />
+        <logger name="io.netty" level="WARN" />
+        <logger name="jdbc" level="OFF" />
+        <logger name="jdbc.sqlonly" level="OFF" />
+        <logger name="jdbc.sqltiming" level="DEBUG" />
+        <logger name="jdbc.resultsettable" level="OFF" />
+        <logger name="org.mybatis" level="INFO" />
+        <logger name="org.mybatis.spring.SqlSessionFactoryBean" level="DEBUG" />
+        <logger name="io.swagger.v3.core.converter.ModelConverterContextImpl" level="OFF"/>
+
+        <logger name="jakarta.activation" level="OFF"/>
+        <logger name="sun.rmi" level="OFF"/>
+        <logger name="angus.activation" level="OFF"/>
+        <logger name="javax.management.remote.rmi" level="OFF"/>
+<!--        <logger name="jdbc.sqltiming" level="OFF"/>-->
+    </springProfile>
+
+    <springProfile name="dev">
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!-- 파일 경로 설정 -->
+            <file>logs/app-dev.log</file>
+
+            <!-- 파일 정책 -->
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>logs/app-dev.%d{yyyy-MM-dd}.log</fileNamePattern>
+                <timeBasedFileNamaingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>10MB</maxFileSize>
+                </timeBasedFileNamaingAndTriggeringPolicy>
+                <totalSizeCap>10GB</totalSizeCap>
+                <!-- 보관주기(일), 설정시 해당 일이 지나면 자동으로 제거 -->
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="FILE" />
+        </root>
+
+        <logger name="org.springframework" level="INFO" additivity="false">
+            <appender-ref ref="FILE" />
+        </logger>
+        <logger name="com.zaxxer.hikari" level="WARN" />
+        <logger name="jdbc" level="OFF" />
+        <logger name="jdbc.sqlonly" level="OFF" />
+        <logger name="jdbc.sqltiming" level="INFO" />
+        <logger name="jdbc.resultsettable" level="OFF" />
+    </springProfile>
+
+    <springProfile name="prod">
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!-- 파일 경로 설정 -->
+            <file>logs/app-prod.log</file>
+
+            <!-- 파일 정책 -->
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>logs/app-prod.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>10MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <totalSizeCap>20GB</totalSizeCap>
+                <!-- 보관주기(일), 설정시 해당 일이 지나면 자동으로 제거 -->
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+
+        <root level="WARN">
+            <appender-ref ref="FILE" />
+        </root>
+
+        <logger name="org.springframework" level="INFO" additivity="false">
+            <appender-ref ref="FILE" />
+        </logger>
+        <logger name="com.zaxxer.hikari" level="WARN" />
+        <logger name="jdbc" level="OFF" />
+        <logger name="jdbc.sqlonly" level="OFF" />
+        <logger name="jdbc.sqltiming" level="WARN" />
+        <logger name="jdbc.resultsettable" level="OFF" />
+    </springProfile>
+</configuration>
