@@ -7,7 +7,6 @@ import com.bank.gugu.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.util.StringUtils;
 
 public record CategoryCreateRequest(
         @Schema(description = "카테고리명", example = "기타")

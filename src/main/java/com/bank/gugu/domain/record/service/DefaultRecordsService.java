@@ -4,8 +4,13 @@ import com.bank.gugu.domain.assets.repository.AssetsRepository;
 import com.bank.gugu.domain.assetsDetail.repository.AssetsDetailRepository;
 import com.bank.gugu.domain.category.repository.CategoryRepository;
 import com.bank.gugu.domain.record.repository.RecordsRepository;
+import com.bank.gugu.domain.record.repository.condition.RecordCurrentCondition;
+import com.bank.gugu.domain.record.repository.condition.RecordMonthCondition;
 import com.bank.gugu.domain.record.service.dto.request.RecordCreateRequest;
 import com.bank.gugu.domain.record.service.dto.request.RecordUpdateRequest;
+import com.bank.gugu.domain.record.service.dto.response.RecordsCurrentResponse;
+import com.bank.gugu.domain.record.service.dto.response.RecordsMonthResponse;
+import com.bank.gugu.domain.record.service.dto.response.RecordsResponse;
 import com.bank.gugu.domain.user.repository.UserRepository;
 import com.bank.gugu.entity.BaseEntity;
 import com.bank.gugu.entity.assets.Assets;
@@ -16,10 +21,16 @@ import com.bank.gugu.entity.records.Records;
 import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.exception.OperationErrorException;
 import com.bank.gugu.global.exception.dto.ErrorCode;
+import com.bank.gugu.global.query.record.Range;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -105,5 +116,32 @@ public class DefaultRecordsService implements RecordsService {
         }
         // 수정
         findRecord.update(newEntity);
+    }
+
+    @Override
+    public List<RecordsCurrentResponse> getCurrentRecord(LocalDate currentDate, User user) {
+        // create condition
+        RecordCurrentCondition condition = new RecordCurrentCondition(currentDate, user);
+        return recordsRepository.findCurrentQuery(condition);
+    }
+
+    @Override
+    public List<RecordsResponse> getMonthRecord(String date, User user) {
+        // 해당 월의 첫 번째 날과 마지막 날 계산
+        LocalDate startDate = LocalDate.parse(date.concat("-01"));
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+
+        // create condition
+        RecordMonthCondition condition = new RecordMonthCondition(new Range(startDate, endDate), user);
+        Map<LocalDate, List<RecordsMonthResponse>> groupedByDate = recordsRepository.findMonthQuery(condition).stream()
+                .collect(Collectors.groupingBy(RecordsMonthResponse::getUserDate));
+
+        // RecordsResponse 리스트로 변환
+        return groupedByDate.entrySet().stream()
+                .map(entry -> new RecordsResponse(
+                        entry.getKey().toString(), // 또는 원하는 날짜 형식
+                        entry.getValue()
+                ))
+                .collect(Collectors.toList());
     }
 }

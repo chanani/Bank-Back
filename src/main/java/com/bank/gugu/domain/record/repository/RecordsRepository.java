@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface RecordsRepository extends JpaRepository<Records, Long> {
+public interface RecordsRepository extends JpaRepository<Records, Long>, RecordsRepositoryCustom {
     Optional<Records> findByIdAndStatus(Long recordsId, StatusType statusType);
 }

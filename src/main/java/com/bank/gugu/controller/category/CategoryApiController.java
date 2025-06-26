@@ -67,5 +67,7 @@ public class CategoryApiController {
         return ResponseEntity.ok(DataResponse.send(categories));
     }
 
+    // todo 카테고리 위치 변경
+
 
 }
