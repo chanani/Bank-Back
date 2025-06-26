@@ -5,6 +5,7 @@ import com.bank.gugu.entity.assets.Assets;
 import com.bank.gugu.entity.category.Category;
 import com.bank.gugu.entity.common.constant.PriceType;
 import com.bank.gugu.entity.common.constant.RecordType;
+import com.bank.gugu.entity.common.constant.StatusType;
 import com.bank.gugu.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -84,6 +85,9 @@ public class Records extends BaseEntity {
         }
         if (newEntity.useDate != null) {
             this.useDate = newEntity.useDate;
+        }
+        if(newEntity.priceType != null) {
+            this.priceType = newEntity.priceType;
         }
     }
 }

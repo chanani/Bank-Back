@@ -2,8 +2,11 @@ package com.bank.gugu.domain.assetsDetail.service.request;
 
 import com.bank.gugu.entity.assets.Assets;
 import com.bank.gugu.entity.assetsDetail.AssetsDetail;
+import com.bank.gugu.entity.category.Category;
 import com.bank.gugu.entity.common.constant.BooleanYn;
+import com.bank.gugu.entity.common.constant.PriceType;
 import com.bank.gugu.entity.common.constant.RecordType;
+import com.bank.gugu.entity.records.Records;
 import com.bank.gugu.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -28,6 +31,14 @@ public record AssetsDetailCreateRequest(
         @NotBlank(message = "날짜는 필수입니다.")
         String useDate,
 
+        @Schema(description = "카테고리", example = "30")
+        @NotNull(message = "카테고리는 필수입니다.")
+        Long categoryId,
+
+        @Schema(description = "결제 유형", example = "CHECK_CARD")
+        @NotNull(message = "결제 유형은 필수입니다.")
+        PriceType priceType,
+
         @Schema(description = "기록에 표시 여부", example = "true")
         @NotNull(message = "기록에 표시 여부는 필수입니다.")
         boolean active,
@@ -36,11 +47,13 @@ public record AssetsDetailCreateRequest(
         String memo
 ) {
 
-    public AssetsDetail toEntity(User user, Assets assets) {
+    public AssetsDetail toEntity(User user, Assets assets, Category category) {
         return AssetsDetail.builder()
                 .user(user)
                 .assets(assets)
+                .category(category)
                 .type(this.type)
+                .priceType(this.priceType)
                 .price(this.price)
                 .balance(this.type.equals(RecordType.DEPOSIT) ?
                         assets.getBalance() + price :
@@ -48,6 +61,19 @@ public record AssetsDetailCreateRequest(
                 .useDate(LocalDate.parse(this.useDate))
                 .active(this.active ? BooleanYn.Y : BooleanYn.N)
                 .memo(this.memo)
+                .build();
+    }
+
+    public Records toRecordEntity(User user, Assets  assets, Category category) {
+        return Records.builder()
+                .user(user)
+                .category(category)
+                .assets(assets)
+                .type(this.type)
+                .price(price)
+                .priceType(this.priceType)
+                .memo(this.memo)
+                .useDate(LocalDate.parse(this.useDate))
                 .build();
     }
 }

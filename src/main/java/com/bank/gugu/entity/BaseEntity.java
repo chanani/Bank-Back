@@ -49,8 +49,14 @@ public class BaseEntity {
      * state = INACTIVE 처리 (비활성화)
      */
     public void inactive() {
-        this.status = StatusType.DELETED;
+        this.status = StatusType.INACTIVE;
     }
 
+    /**
+     * 내역에서 숨김 및 보이기 활성화
+     */
+    public void updateActive(boolean active) {
+        this.status = active ? StatusType.ACTIVE : StatusType.INACTIVE;
+    }
 
 }

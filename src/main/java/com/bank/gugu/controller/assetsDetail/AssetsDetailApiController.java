@@ -3,6 +3,7 @@ package com.bank.gugu.controller.assetsDetail;
 import com.bank.gugu.controller.assetsDetail.input.AssetsDetailsInput;
 import com.bank.gugu.domain.assetsDetail.service.AssetsDetailService;
 import com.bank.gugu.domain.assetsDetail.service.request.AssetsDetailCreateRequest;
+import com.bank.gugu.domain.assetsDetail.service.request.AssetsDetailUpdateRequest;
 import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailResponse;
 import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailsResponse;
 import com.bank.gugu.entity.user.User;
@@ -35,6 +36,18 @@ public class AssetsDetailApiController {
             @Parameter(hidden = true) User user
     ) {
         assetsDetailService.addAssetsDetail(request, user);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
+    @Operation(summary = "자산 상세내역 수정 API",
+            description = "자산 상세내역을 수정합니다.")
+    @PutMapping("/api/v1/user/assets-detail/{assetsDetailId}")
+    public ResponseEntity<ApiResponse> updateAssetsDetail(
+            @PathVariable(name = "assetsDetailId") Long assetsDetailId,
+            @Valid @RequestBody AssetsDetailUpdateRequest request,
+            @Parameter(hidden = true) User user
+    ) {
+        assetsDetailService.updateAssetsDetail(assetsDetailId, request, user);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
@@ -72,7 +85,7 @@ public class AssetsDetailApiController {
         return ResponseEntity.ok(DataResponse.send(assetsDetails));
     }
 
-    // todo 수정
+
 
 
 }

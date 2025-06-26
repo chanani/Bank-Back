@@ -89,4 +89,6 @@ public class Assets extends BaseEntity {
     public void updateRecordBalance(Records findRecord, Records newEntity) {
         this.balance = this.balance - findRecord.getPrice() + newEntity.getPrice();
     }
+
+
 }

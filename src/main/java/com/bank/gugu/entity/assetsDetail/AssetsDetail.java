@@ -2,7 +2,9 @@ package com.bank.gugu.entity.assetsDetail;
 
 import com.bank.gugu.entity.BaseEntity;
 import com.bank.gugu.entity.assets.Assets;
+import com.bank.gugu.entity.category.Category;
 import com.bank.gugu.entity.common.constant.BooleanYn;
+import com.bank.gugu.entity.common.constant.PriceType;
 import com.bank.gugu.entity.common.constant.RecordType;
 import com.bank.gugu.entity.records.Records;
 import com.bank.gugu.entity.user.User;
@@ -12,7 +14,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,12 +38,20 @@ public class AssetsDetail extends BaseEntity {
     private Assets assets;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "record_id")
     private Records record;
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private RecordType type;
+
+    @Column(name = "price_type")
+    @Enumerated(EnumType.STRING)
+    private PriceType priceType;
 
     @Column(name = "price")
     private Integer price;
@@ -64,23 +73,7 @@ public class AssetsDetail extends BaseEntity {
      * 입/출금 내역 변경되었을 경우 내용 업데이트
      */
     public void updateRecordPrice(Records newEntity) {
-        System.out.println("this.balance = " + this.balance);
-        System.out.println("this.price = " + this.price);
-        System.out.println("newEntity = " + newEntity.getPrice());
-
-        // 누적 잔액 변경
-        /*if (this.type.equals(RecordType.DEPOSIT) && newEntity.getType().equals(RecordType.DEPOSIT)) {
-            this.balance = this.balance - this.price + newEntity.getPrice();
-        } else if (this.type.equals(RecordType.DEPOSIT) && newEntity.getType().equals(RecordType.WITHDRAW)) {
-            this.balance = this.balance - this.price + newEntity.getPrice();
-        } else if (this.type.equals(RecordType.WITHDRAW) && newEntity.getType().equals(RecordType.DEPOSIT)) {
-            this.balance = this.balance
-        } else if (this.type.equals(RecordType.WITHDRAW) && newEntity.getType().equals(RecordType.WITHDRAW)) {
-
-        }*/
-
         this.balance = this.balance - this.price + newEntity.getPrice();
-
         // 아래 컬럼 변경
         if (newEntity.getType() != null) {
             this.type = newEntity.getType();
@@ -91,5 +84,49 @@ public class AssetsDetail extends BaseEntity {
         if (newEntity.getUseDate() != null) {
             this.useDate = newEntity.getUseDate();
         }
+    }
+
+    /**
+     * 자산 상세 정보 수정
+     */
+
+    public void update(AssetsDetail newEntity) {
+         if(newEntity.assets != null){
+             this.assets = newEntity.assets;
+         }
+         if(newEntity.record != null){
+             this.record = newEntity.record;
+         }
+         if (newEntity.type != null) {
+             this.type = newEntity.type;
+         }
+         if (newEntity.price != null) {
+             this.price = newEntity.price;
+         }
+         if (newEntity.balance != null) {
+             this.balance = newEntity.balance;
+         }
+         if (newEntity.useDate != null) {
+             this.useDate = newEntity.useDate;
+         }
+         if (newEntity.memo != null) {
+             this.memo = newEntity.memo;
+         }
+         if(newEntity.active!=null){
+             this.active = newEntity.active;
+         }
+         if(newEntity.category!=null){
+             this.category = newEntity.category;
+         }
+         if(newEntity.priceType!=null){
+             this.priceType = newEntity.priceType;
+         }
+    }
+
+    /**
+     * record 추가
+     */
+    public void updateRecordId(Records records) {
+        this.record = records;
     }
 }
