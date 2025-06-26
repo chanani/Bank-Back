@@ -90,4 +90,6 @@ public class Records extends BaseEntity {
             this.priceType = newEntity.priceType;
         }
     }
+
+
 }

@@ -41,13 +41,13 @@ public class Category extends BaseEntity {
     private Icon icon;
 
     @Column(name = "orders")
-    private Integer order;
+    private Integer orders;
 
     public Category(User user, RecordType type, String name, Integer order, Icon icon) {
         this.user = user;
         this.type = type;
         this.name = name;
-        this.order = order;
+        this.orders = order;
         this.icon = icon;
     }
 
@@ -70,6 +70,6 @@ public class Category extends BaseEntity {
      * 순서 변경
      */
     public void updateOrder(Integer requestOrder) {
-        this.order = requestOrder;
+        this.orders = requestOrder;
     }
 }

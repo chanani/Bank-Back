@@ -65,7 +65,9 @@ public enum ErrorCode {
     NOT_FOUND_ASSETS_DETAIL(1251, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 자산입니다."),
 
     // 1300 ~ 1349 입/출금 관련 예외
-    NOT_FOUND_RECORDS(1300, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 기록입니다.");
+    NOT_FOUND_RECORDS(1300, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 입/출금 내역입니다."),
+    NOT_FOUND_RECORDS_IMAGE(1301, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 이미지입니다.");
+
 
 
 

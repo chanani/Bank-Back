@@ -85,7 +85,4 @@ public class AssetsDetailApiController {
         return ResponseEntity.ok(DataResponse.send(assetsDetails));
     }
 
-
-
-
 }
