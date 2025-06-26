@@ -1,10 +1,15 @@
 package com.bank.gugu.domain.record.service;
 
 import com.bank.gugu.domain.record.service.dto.request.RecordCreateRequest;
+import com.bank.gugu.domain.record.service.dto.request.RecordUpdateMemoRequest;
 import com.bank.gugu.domain.record.service.dto.request.RecordUpdateRequest;
+import com.bank.gugu.domain.record.service.dto.response.RecordResponse;
+import com.bank.gugu.domain.record.service.dto.response.RecordsCalendarResponse;
 import com.bank.gugu.domain.record.service.dto.response.RecordsCurrentResponse;
 import com.bank.gugu.domain.record.service.dto.response.RecordsResponse;
 import com.bank.gugu.entity.user.User;
+import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,8 +21,9 @@ public interface RecordsService {
      *
      * @param request 등록 요청 객체
      * @param user    로그인 회원 객체
+     * @param files   업로드 요청 이미지 목록
      */
-    void addRecord(RecordCreateRequest request, User user);
+    void addRecord(RecordCreateRequest request, User user, List<MultipartFile> files);
 
     /**
      * 입/출금 내역 삭제
@@ -45,9 +51,35 @@ public interface RecordsService {
 
     /**
      * 입/출금 내역 조회(한달)
+     *
      * @param date 조회 날짜
      * @param user 로그인 회원 객체
      * @return 입/출금 내역
      */
     List<RecordsResponse> getMonthRecord(String date, User user);
+
+    /**
+     * 입/출금 상세내역 조회
+     *
+     * @param recordsId 입/출금 내역 식별자
+     * @return 입/출금 상세내역 및 이미지
+     */
+    RecordResponse getRecord(Long recordsId);
+
+    /**
+     * 입/출금 메모 수정
+     *
+     * @param recordsId 입/출금 내역 식별자
+     * @param request   수정 요청 객체
+     */
+    void updateMemo(Long recordsId, RecordUpdateMemoRequest request);
+
+    /**
+     * 캘린더에 표시할 입/출금 및 총 금액 내역 조회
+     *
+     * @param yearMonth 조회 날짜
+     * @param user      로그인 회원 객체
+     * @return 캘린더에 표시할 입/출금 및 총 금액 내역
+     */
+    RecordsCalendarResponse getCalendarRecord(String yearMonth, User user);
 }
