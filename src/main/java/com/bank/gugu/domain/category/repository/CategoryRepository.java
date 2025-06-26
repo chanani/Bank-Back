@@ -12,9 +12,11 @@ import java.util.Optional;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findByIdAndStatus(Long categoryId, StatusType statusType);
 
-    List<Category> findByUserIdAndTypeAndStatus(Long id, RecordType type, StatusType statusType);
+    List<Category> findByUserIdAndTypeAndStatusOrderByOrdersAsc(Long id, RecordType type, StatusType statusType);
+    List<Category> findByUserIdAndStatusOrderByOrdersAsc(Long userId, StatusType status);
 
-    Optional<Category> findByUserAndOrder(User user, Integer currentOrder);
+    Optional<Category> findByUserAndOrders(User user, Integer currentOrder);
 
-    List<Category> findByUserAndOrderBetween(User user, int currentOrder, Integer requestOrder);
+    List<Category> findByUserAndOrdersBetween(User user, int currentOrder, Integer requestOrder);
+
 }

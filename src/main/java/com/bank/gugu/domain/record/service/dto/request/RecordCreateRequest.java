@@ -56,12 +56,14 @@ public record RecordCreateRequest(
                 .build();
     }
 
-    public AssetsDetail toAssetsDetail(User user, Assets assets, Records record) {
+    public AssetsDetail toAssetsDetail(User user, Assets assets, Records record, Category category) {
         return AssetsDetail.builder()
                 .user(user)
                 .assets(assets)
+                .category(category)
                 .record(record)
                 .type(this.type)
+                .priceType(this.priceType)
                 .price(this.price)
                 .balance(this.type.equals(RecordType.DEPOSIT) ?
                         assets.getBalance() + price :

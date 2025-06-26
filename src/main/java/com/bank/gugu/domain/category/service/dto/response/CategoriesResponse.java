@@ -16,9 +16,13 @@ public class CategoriesResponse {
     @Schema(description = "아이콘 경로")
     private String iconPath;
 
+    @Schema(description = "순서")
+    private Integer order;
+
     public CategoriesResponse(Category category) {
         this.id = category.getId();
         this.name = category.getName();
         this.iconPath = category.getIcon() != null ? category.getIcon().getPath() : null;
+        this.order = category.getOrders();
     }
 }

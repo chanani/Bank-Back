@@ -80,7 +80,12 @@ public class DefaultCategoryService implements CategoryService {
 
     @Override
     public List<CategoriesResponse> getCategories(User user, RecordType type) {
-        return categoryRepository.findByUserIdAndTypeAndStatus(user.getId(), type, StatusType.ACTIVE).stream()
+        if (type.equals(RecordType.ALL)) {
+            return categoryRepository.findByUserIdAndStatusOrderByOrdersAsc(user.getId(), StatusType.ACTIVE).stream()
+                    .map(CategoriesResponse::new)
+                    .toList();
+        }
+        return categoryRepository.findByUserIdAndTypeAndStatusOrderByOrdersAsc(user.getId(), type, StatusType.ACTIVE).stream()
                 .map(CategoriesResponse::new)
                 .toList();
 
@@ -93,7 +98,7 @@ public class DefaultCategoryService implements CategoryService {
         Integer requestOrder = request.requestOrder();
 
         // 현재 순서의 카테고리 조회
-        Category targetCategory = categoryRepository.findByUserAndOrder(user, currentOrder)
+        Category targetCategory = categoryRepository.findByUserAndOrders(user, currentOrder)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
 
         // 요청 순서가 현재 순서와 같으면 변경할 필요 없음
@@ -117,11 +122,11 @@ public class DefaultCategoryService implements CategoryService {
     private void moveBackward(User user, Category targetCategory, Integer currentOrder, Integer requestOrder) {
         // 1. 이동할 범위의 카테고리들을 앞으로 한 칸씩 이동
         // currentOrder + 1부터 requestOrder까지의 카테고리들을 -1씩 이동
-        List<Category> categoriesToShift = categoryRepository.findByUserAndOrderBetween(
+        List<Category> categoriesToShift = categoryRepository.findByUserAndOrdersBetween(
                 user, currentOrder + 1, requestOrder);
 
         for (Category category : categoriesToShift) {
-            category.updateOrder(category.getOrder() - 1);
+            category.updateOrder(category.getOrders() - 1);
         }
 
         // 2. 대상 카테고리를 새 위치로 이동
@@ -138,11 +143,11 @@ public class DefaultCategoryService implements CategoryService {
     private void moveForward(User user, Category targetCategory, Integer currentOrder, Integer requestOrder) {
         // 1. 이동할 범위의 카테고리들을 뒤로 한 칸씩 이동
         // requestOrder부터 currentOrder - 1까지의 카테고리들을 +1씩 이동
-        List<Category> categoriesToShift = categoryRepository.findByUserAndOrderBetween(
+        List<Category> categoriesToShift = categoryRepository.findByUserAndOrdersBetween(
                 user, requestOrder, currentOrder - 1);
 
         for (Category category : categoriesToShift) {
-            category.updateOrder(category.getOrder() + 1);
+            category.updateOrder(category.getOrders() + 1);
         }
 
         // 2. 대상 카테고리를 새 위치로 이동
