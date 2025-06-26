@@ -40,10 +40,14 @@ public class Category extends BaseEntity {
     @JoinColumn(name = "icon_id")
     private Icon icon;
 
-    public Category(User user, RecordType type, String name, Icon icon) {
+    @Column(name = "orders")
+    private Integer order;
+
+    public Category(User user, RecordType type, String name, Integer order, Icon icon) {
         this.user = user;
         this.type = type;
         this.name = name;
+        this.order = order;
         this.icon = icon;
     }
 
@@ -60,5 +64,12 @@ public class Category extends BaseEntity {
         if(newEntity.type != null){
             this.type = newEntity.type;
         }
+    }
+
+    /**
+     * 순서 변경
+     */
+    public void updateOrder(Integer requestOrder) {
+        this.order = requestOrder;
     }
 }

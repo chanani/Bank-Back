@@ -1,6 +1,7 @@
 package com.bank.gugu.domain.category.service;
 
 import com.bank.gugu.domain.category.service.dto.request.CategoryCreateRequest;
+import com.bank.gugu.domain.category.service.dto.request.CategoryUpdateOrderRequest;
 import com.bank.gugu.domain.category.service.dto.request.CategoryUpdateRequest;
 import com.bank.gugu.domain.category.service.dto.response.CategoriesResponse;
 import com.bank.gugu.entity.common.constant.RecordType;
@@ -49,4 +50,11 @@ public interface CategoryService {
      * @return 회원의 카테고리 리스트
      */
     List<CategoriesResponse> getCategories(User user, RecordType type);
+
+    /**
+     * 카테고리 순서 변경
+     * @param request 변경 요청 객체
+     * @param user 로그인 회원 객체
+     */
+    void updateOrder(@Valid CategoryUpdateOrderRequest request, User user);
 }
