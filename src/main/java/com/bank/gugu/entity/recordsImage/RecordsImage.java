@@ -32,4 +32,5 @@ public class RecordsImage extends BaseEntity {
 
     @Column(name = "path")
     private String path;
+
 }

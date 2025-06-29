@@ -21,12 +21,13 @@ public record CategoryCreateRequest(
         Integer icon
 ) {
 
-        public Category toEntity(User user, Icon icon) {
+        public Category toEntity(User user, Icon icon, Integer order) {
                 return Category.builder()
                         .user(user)
                         .type(this.type)
                         .icon(icon)
                         .name(this.name)
+                        .orders(order + 1)
                         .build();
         }
 }

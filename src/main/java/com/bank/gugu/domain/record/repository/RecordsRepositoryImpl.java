@@ -11,6 +11,7 @@ import com.bank.gugu.domain.record.service.dto.response.RecordsCurrentResponse;
 import com.bank.gugu.domain.record.service.dto.response.RecordsMonthResponse;
 import com.bank.gugu.entity.common.constant.RecordType;
 import com.bank.gugu.entity.common.constant.StatusType;
+import com.bank.gugu.entity.recordsImage.QRecordsImage;
 import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.query.record.Range;
 import com.querydsl.core.types.Expression;
@@ -28,6 +29,7 @@ import java.util.List;
 
 import static com.bank.gugu.entity.category.QCategory.*;
 import static com.bank.gugu.entity.records.QRecords.*;
+import static com.bank.gugu.entity.recordsImage.QRecordsImage.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -41,19 +43,26 @@ public class RecordsRepositoryImpl implements RecordsRepositoryCustom {
                         RecordsCurrentResponse.class,
                         records.id,
                         records.category.icon.path,
+                        records.category.name,
                         records.type,
                         records.price,
                         records.priceType,
                         records.monthly,
                         records.memo,
-                        records.useDate
+                        records.useDate,
+                        new CaseBuilder()
+                                .when(recordsImage.count().gt(0)).then(true)
+                                .otherwise(false)
                 ))
                 .from(records)
+                .leftJoin(recordsImage)
+                .on(recordsImage.records.eq(records))
                 .where(
                         notDeleteRecord(),
                         eqUser(condition.user()),
                         eqUseDate(condition.currentDate())
                 )
+                .groupBy(records.id)
                 .orderBy(records.createdAt.desc())
                 .fetch();
     }

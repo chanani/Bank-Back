@@ -27,7 +27,7 @@ public record RecordCreateRequest(
         Integer price,
 
         @Schema(description = "할부", example = "2")
-        Integer Monthly,
+        Integer monthly,
 
         @Schema(description = "메모", example = "마트 장보기")
         String memo,
@@ -48,9 +48,9 @@ public record RecordCreateRequest(
                 .category(category)
                 .assets(assets)
                 .type(this.type)
-                .price(this.price)
+                .price(type.equals(RecordType.DEPOSIT) ? this.price : -this.price)
                 .priceType(this.priceType)
-                .monthly(this.priceType.equals(PriceType.CARD) ? this.Monthly : null)
+                .monthly(this.priceType.equals(PriceType.CARD) ? this.monthly : null)
                 .memo(this.memo)
                 .useDate(LocalDate.parse(this.useDate))
                 .build();

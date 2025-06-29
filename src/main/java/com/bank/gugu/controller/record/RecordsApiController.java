@@ -37,7 +37,8 @@ public class RecordsApiController {
             MediaType.APPLICATION_JSON_VALUE
     })
     public ResponseEntity<ApiResponse> addRecord(
-            @Valid @RequestPart RecordCreateRequest request, @Parameter(hidden = true) User user,
+            @Valid @RequestPart RecordCreateRequest request,
+            @Parameter(hidden = true) User user,
             @RequestPart(value = "files", required = false) List<MultipartFile> inputFiles
     ) {
         recordsService.addRecord(request, user, inputFiles);

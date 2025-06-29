@@ -45,8 +45,11 @@ public class DefaultCategoryService implements CategoryService {
             findIcon = iconRepository.findByIdAndStatus(request.icon(), StatusType.ACTIVE)
                     .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_ICON));
         }
+        // 카테고리 순서 조회(제일 높은 번호 조회)
+        Integer order = categoryRepository.findTopOrdersByUserAndStatus(user, StatusType.ACTIVE)
+                .orElse(0);
         // dto -> entity
-        Category newEntity = request.toEntity(user, findIcon);
+        Category newEntity = request.toEntity(user, findIcon, order);
         categoryRepository.save(newEntity);
     }
 

@@ -16,6 +16,9 @@ public class RecordsCurrentResponse {
     @Schema(description = "카테고리 아이콘")
     private String categoryIcon;
 
+    @Schema(description = "카테고리명")
+    private String categoryName;
+
     @Schema(description = "타입")
     private RecordType type;
 
@@ -34,16 +37,22 @@ public class RecordsCurrentResponse {
     @Schema(description = "날짜")
     private LocalDate userDate;
 
-    public RecordsCurrentResponse(Long id, String categoryIcon, RecordType type,
-                                  Integer price, PriceType priceType,
-                                  Integer monthly, String memo, LocalDate userDate) {
+    @Schema(description = "이미지 존재 여부")
+    private boolean imageStatus;
+
+    public RecordsCurrentResponse(Long id, String categoryIcon, String categoryName,
+                                  RecordType type, Integer price, PriceType priceType,
+                                  Integer monthly, String memo, LocalDate userDate,
+                                  boolean imageStatus) {
         this.id = id;
         this.categoryIcon = categoryIcon;
+        this.categoryName = categoryName;
         this.type = type;
         this.price = price;
         this.priceType = priceType.getValue();
         this.monthly = monthly;
         this.memo = memo;
         this.userDate = userDate;
+        this.imageStatus = imageStatus;
     }
 }

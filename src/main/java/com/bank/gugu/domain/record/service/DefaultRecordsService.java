@@ -78,7 +78,6 @@ public class DefaultRecordsService implements RecordsService {
             // 자산 그룹 합계 금액 업데이트
             findAssets.updateBalance(newAssetsDetailEntity);
         }
-
         if(files != null && !files.isEmpty()) {
             // 서버에 이미지 업로드
             List<FileName> fileNames = fileUtil.fileListUpload(files, "/bank/fileImage");

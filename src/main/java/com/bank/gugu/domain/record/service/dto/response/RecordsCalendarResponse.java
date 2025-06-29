@@ -8,10 +8,10 @@ import java.util.List;
 @Getter
 public class RecordsCalendarResponse {
 
-    @Schema(description = "누적 지출 금액")
+    @Schema(description = "누적 수입 금액")
     private Integer totalDeposit;
 
-    @Schema(description = "누적 수업 금액")
+    @Schema(description = "누적 지출 금액")
     private Integer totalWithdraw;
 
     @Schema(description = "토탈 금액")
