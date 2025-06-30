@@ -68,7 +68,7 @@ public class FileUtil {
             throw new RuntimeException(e);
         }
 
-        return new FileName(fileModify.substring(fileModify.indexOf("uploads/") + 8), Normalizer.normalize(originalFileName, Normalizer.Form.NFC));
+        return new FileName(fileModify, Normalizer.normalize(originalFileName, Normalizer.Form.NFC));
     }
 
     /**
