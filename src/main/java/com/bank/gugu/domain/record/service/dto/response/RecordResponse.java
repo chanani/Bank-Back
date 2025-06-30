@@ -34,7 +34,7 @@ public class RecordResponse {
     private String memo;
 
     @Schema(description = "날짜")
-    private LocalDate useDate;
+    private LocalDate userDate;
 
     @Schema(description = "이미지 목록")
     private List<RecordImagesResponse> recordImages;
@@ -53,9 +53,9 @@ public class RecordResponse {
         this.priceType = record.getPriceType();
         this.monthly = record.getMonthly();
         this.memo = record.getMemo();
-        this.useDate = record.getUseDate();
+        this.userDate = record.getUseDate();
         this.recordImages = images;
-        this.assetsId = record.getAssets().getId();
-        this.categoryId = record.getCategory().getId();
+        this.assetsId = record.getAssets() == null ? null : record.getAssets().getId();
+        this.categoryId = record.getCategory() == null ? null : record.getCategory().getId();
     }
 }
