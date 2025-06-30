@@ -92,6 +92,7 @@ public class DefaultRecordsService implements RecordsService {
                         .build();
                 recordsImages.add(recordsImage);
             }
+
             // 등록
             recordsImageRepository.saveAll(recordsImages);
         }
