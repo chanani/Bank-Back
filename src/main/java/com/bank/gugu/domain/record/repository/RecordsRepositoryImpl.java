@@ -93,7 +93,7 @@ public class RecordsRepositoryImpl implements RecordsRepositoryCustom {
                         eqRange(condition.range())
                 )
                 .groupBy(records.id)
-                .orderBy(records.createdAt.desc())
+                .orderBy(records.useDate.desc())
                 .fetch();
     }
 
