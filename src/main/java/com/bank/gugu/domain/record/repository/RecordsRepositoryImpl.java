@@ -79,9 +79,14 @@ public class RecordsRepositoryImpl implements RecordsRepositoryCustom {
                         records.priceType,
                         records.monthly,
                         records.memo,
-                        records.useDate
+                        records.useDate,
+                        new CaseBuilder()
+                                .when(recordsImage.count().gt(0)).then(true)
+                                .otherwise(false)
                 ))
                 .from(records)
+                .leftJoin(recordsImage)
+                .on(recordsImage.records.eq(records))
                 .where(
                         notDeleteRecord(),
                         eqUser(condition.user()),

@@ -14,7 +14,7 @@ public class RecordsCurrentResponse {
     private Long id;
 
     @Schema(description = "카테고리 아이콘")
-    private String categoryIcon;
+    private String iconPath;
 
     @Schema(description = "카테고리명")
     private String categoryName;
@@ -40,12 +40,12 @@ public class RecordsCurrentResponse {
     @Schema(description = "이미지 존재 여부")
     private boolean imageStatus;
 
-    public RecordsCurrentResponse(Long id, String categoryIcon, String categoryName,
+    public RecordsCurrentResponse(Long id, String iconPath, String categoryName,
                                   RecordType type, Integer price, PriceType priceType,
                                   Integer monthly, String memo, LocalDate userDate,
                                   boolean imageStatus) {
         this.id = id;
-        this.categoryIcon = categoryIcon;
+        this.iconPath = iconPath;
         this.categoryName = categoryName;
         this.type = type;
         this.price = price;
