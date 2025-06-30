@@ -39,6 +39,12 @@ public class RecordResponse {
     @Schema(description = "이미지 목록")
     private List<RecordImagesResponse> recordImages;
 
+    @Schema(description = "계좌 ID")
+    private Long assetsId;
+
+    @Schema(description = "카테고리 ID")
+    private Long categoryId;
+
     public RecordResponse(Records record, List<RecordImagesResponse> images) {
         this.id = record.getId();
         this.categoryIcon = record.getCategory().getIcon().getPath();
@@ -49,5 +55,7 @@ public class RecordResponse {
         this.memo = record.getMemo();
         this.userDate = record.getUseDate();
         this.recordImages = images;
+        this.assetsId = record.getAssets().getId();
+        this.categoryId = record.getCategory().getId();
     }
 }
