@@ -73,6 +73,7 @@ public class RecordsRepositoryImpl implements RecordsRepositoryCustom {
                         RecordsMonthResponse.class,
                         records.id,
                         records.category.icon.path,
+                        records.category.name,
                         records.type,
                         records.price,
                         records.priceType,
