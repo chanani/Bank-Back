@@ -92,6 +92,7 @@ public class RecordsRepositoryImpl implements RecordsRepositoryCustom {
                         eqUser(condition.user()),
                         eqRange(condition.range())
                 )
+                .groupBy(records.id)
                 .orderBy(records.createdAt.desc())
                 .fetch();
     }
