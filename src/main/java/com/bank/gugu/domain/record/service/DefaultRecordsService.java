@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -162,11 +163,12 @@ public class DefaultRecordsService implements RecordsService {
 
         // RecordsResponse 리스트로 변환
         return groupedByDate.entrySet().stream()
+                .sorted(Map.Entry.<LocalDate, List<RecordsMonthResponse>>comparingByKey().reversed())
                 .map(entry -> new RecordsResponse(
                         entry.getKey().toString(), // 또는 원하는 날짜 형식
                         entry.getValue()
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
