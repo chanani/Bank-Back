@@ -81,7 +81,7 @@ public class DefaultRecordsService implements RecordsService {
         }
         if(files != null && !files.isEmpty()) {
             // 서버에 이미지 업로드
-            List<FileName> fileNames = fileUtil.fileListUpload(files, "/bank/fileImage");
+            List<FileName> fileNames = fileUtil.fileListUpload(files, "/fileImage");
             List<RecordsImage> recordsImages = new ArrayList<>();
             // recordsImage 테이블에 등록
             for (FileName fileName : fileNames) {
