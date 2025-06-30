@@ -37,9 +37,12 @@ public class RecordsMonthResponse {
     @Schema(description = "날짜")
     private LocalDate userDate;
 
+    @Schema(description = "이미지 존재 여부")
+    private boolean imageStatus;
+
     public RecordsMonthResponse(Long id, String iconPath, String categoryName, RecordType type,
                                 Integer price, PriceType priceType,
-                                Integer monthly, String memo, LocalDate userDate) {
+                                Integer monthly, String memo, LocalDate userDate, boolean imageStatus) {
         this.id = id;
         this.iconPath = iconPath;
         this.categoryName = categoryName;
@@ -49,5 +52,6 @@ public class RecordsMonthResponse {
         this.monthly = monthly;
         this.memo = memo;
         this.userDate = userDate;
+        this.imageStatus = imageStatus;
     }
 }
