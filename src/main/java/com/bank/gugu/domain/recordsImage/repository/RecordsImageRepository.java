@@ -12,4 +12,6 @@ public interface RecordsImageRepository extends JpaRepository<RecordsImage, Long
     List<RecordsImage> findAllByRecordsAndStatus(Records findRecord, StatusType statusType);
 
     Optional<RecordsImage> findByIdAndStatus(Long id, StatusType statusType);
+
+    List<RecordsImage> findByIdInAndStatus(List<Long> deleteIds, StatusType statusType);
 }

@@ -53,11 +53,17 @@ public class RecordsApiController {
     }
 
     @Operation(summary = "입/출금 내역 수정 API", description = "입/출금 내역을 수정합니다.")
-    @PutMapping("/api/v1/user/records/{recordsId}")
+    @PutMapping(value = "/api/v1/user/records/{recordsId}", consumes = {
+            MediaType.MULTIPART_FORM_DATA_VALUE,
+            MediaType.APPLICATION_JSON_VALUE
+    })
     public ResponseEntity<ApiResponse> updateRecord(
-            @Valid @RequestBody RecordUpdateRequest request, @PathVariable(name = "recordsId") Long recordsId
+            @Valid @RequestPart RecordUpdateRequest request,
+            @PathVariable(name = "recordsId") Long recordsId,
+            @RequestPart(value = "files", required = false) List<MultipartFile> inputFiles,
+            @Parameter(hidden = true) User user
     ) {
-        recordsService.updateRecord(request, recordsId);
+        recordsService.updateRecord(request, recordsId, inputFiles, user);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record RecordUpdateRequest(
         @Schema(description = "입/출금 타입", example = "DEPOSIT")
@@ -39,7 +40,10 @@ public record RecordUpdateRequest(
         Long categoryId,
 
         @Schema(description = "자산그룹 ID", example = "3")
-        Long assetsId
+        Long assetsId,
+
+        @Schema(description = "삭제할 이미지 목록", example = "[1, 2]")
+        List<Long> deleteImages
 ) {
 
     public Records toEntity(Category category, Assets assets) {

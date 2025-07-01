@@ -21,9 +21,9 @@ public interface RecordsService {
      *
      * @param request 등록 요청 객체
      * @param user    로그인 회원 객체
-     * @param files   업로드 요청 이미지 목록
+     * @param inputFiles 업로드 이미지 요청 객체
      */
-    void addRecord(RecordCreateRequest request, User user, List<MultipartFile> files);
+    void addRecord(RecordCreateRequest request, User user, List<MultipartFile> inputFiles);
 
     /**
      * 입/출금 내역 삭제
@@ -37,8 +37,10 @@ public interface RecordsService {
      *
      * @param request   수정 요청 객체
      * @param recordsId 내역 식별자
+     * @param inputFiles 업로드 이미지 요청 객체
+     * @param user 로그인 회원 객체
      */
-    void updateRecord(RecordUpdateRequest request, Long recordsId);
+    void updateRecord(RecordUpdateRequest request, Long recordsId, List<MultipartFile> inputFiles, User user);
 
     /**
      * 입/출금 내역 조회(하루)

@@ -55,7 +55,7 @@ public class DefaultRecordsService implements RecordsService {
 
     @Override
     @Transactional
-    public void addRecord(RecordCreateRequest request, User user, List<MultipartFile> files) {
+    public void addRecord(RecordCreateRequest request, User user, List<MultipartFile> inputFiles) {
         // 카테고리 조회
         Category findCategory = categoryRepository.findByIdAndStatus(request.categoryId(), StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
@@ -79,9 +79,9 @@ public class DefaultRecordsService implements RecordsService {
             // 자산 그룹 합계 금액 업데이트
             findAssets.updateBalance(newAssetsDetailEntity);
         }
-        if(files != null && !files.isEmpty()) {
+        if(inputFiles != null && !inputFiles.isEmpty()) {
             // 서버에 이미지 업로드
-            List<FileName> fileNames = fileUtil.fileListUpload(files, "fileImage");
+            List<FileName> fileNames = fileUtil.fileListUpload(inputFiles, "fileImage");
             List<RecordsImage> recordsImages = new ArrayList<>();
             // recordsImage 테이블에 등록
             for (FileName fileName : fileNames) {
@@ -118,7 +118,7 @@ public class DefaultRecordsService implements RecordsService {
 
     @Override
     @Transactional
-    public void updateRecord(RecordUpdateRequest request, Long recordsId) {
+    public void updateRecord(RecordUpdateRequest request, Long recordsId, List<MultipartFile> inputFiles, User user) {
         // 카테고리 조회
         Category findCategory = categoryRepository.findByIdAndStatus(request.categoryId(), StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
@@ -142,6 +142,34 @@ public class DefaultRecordsService implements RecordsService {
         }
         // 수정
         findRecord.update(newEntity);
+
+        // 삭제할 이미지 있을 경우 데이터 삭제
+        List<Long> deleteIds = request.deleteImages();
+        if(request.deleteImages() != null && !request.deleteImages().isEmpty()) {
+            List<RecordsImage> findRecordImages = recordsImageRepository.findByIdInAndStatus(deleteIds, StatusType.ACTIVE);
+            for (RecordsImage findRecordImage : findRecordImages) {
+                findRecordImage.remove();
+            }
+        }
+
+        // 업로드할 이미지 있을 경우 이미지 업로드
+        if(inputFiles != null && !inputFiles.isEmpty()) {
+            // 서버에 이미지 업로드
+            List<FileName> fileNames = fileUtil.fileListUpload(inputFiles, "fileImage");
+            List<RecordsImage> recordsImages = new ArrayList<>();
+            // recordsImage 테이블에 등록
+            for (FileName fileName : fileNames) {
+                RecordsImage recordsImage = RecordsImage.builder()
+                        .user(user)
+                        .records(findRecord)
+                        .path(fileName.getModifiedFileName())
+                        .build();
+                recordsImages.add(recordsImage);
+            }
+
+            // 등록
+            recordsImageRepository.saveAll(recordsImages);
+        }
     }
 
     @Override
