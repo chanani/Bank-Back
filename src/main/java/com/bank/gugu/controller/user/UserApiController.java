@@ -1,11 +1,13 @@
 package com.bank.gugu.controller.user;
 
+import com.bank.gugu.domain.user.repository.UserRepository;
 import com.bank.gugu.domain.user.service.UserService;
 import com.bank.gugu.domain.user.service.dto.request.JoinRequest;
 import com.bank.gugu.domain.user.service.dto.request.LoginRequest;
 import com.bank.gugu.domain.user.service.dto.request.UserUpdatePasswordRequest;
 import com.bank.gugu.domain.user.service.dto.response.LoginResponse;
 import com.bank.gugu.domain.user.service.dto.response.UserInfoResponse;
+import com.bank.gugu.entity.common.constant.StatusType;
 import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.annotation.NoneAuth;
 import com.bank.gugu.global.response.ApiResponse;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserApiController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Operation(summary = "회원가입 API",
             description = "회원가입을 진행합니다.")
@@ -62,4 +65,19 @@ public class UserApiController {
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
+    @Operation(summary = "아이디 중복 검사 API",
+            description = "아이디 사용 가능 여부를 확인합니다.")
+    @GetMapping("/api/v1/none/check/id")
+    public ResponseEntity<DataResponse<Boolean>> checkUserId(@Parameter(name = "userId") String userId) {
+        boolean checkUserId = userRepository.existsByUserId(userId);
+        return ResponseEntity.ok(DataResponse.send(checkUserId));
+    }
+
+    @Operation(summary = "이메일 중복 검사 API",
+            description = "이메일 사용 가능 여부를 확인합니다.")
+    @GetMapping("/api/v1/none/check/email")
+    public ResponseEntity<DataResponse<Boolean>> checkEmail(@Parameter(name = "email") String email) {
+        boolean checkEmail = userRepository.existsByEmailAndStatus(email, StatusType.ACTIVE);
+        return ResponseEntity.ok(DataResponse.send(checkEmail));
+    }
 }
