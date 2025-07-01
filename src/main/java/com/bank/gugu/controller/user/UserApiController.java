@@ -67,6 +67,7 @@ public class UserApiController {
 
     @Operation(summary = "아이디 중복 검사 API",
             description = "아이디 사용 가능 여부를 확인합니다.")
+    @NoneAuth
     @GetMapping("/api/v1/none/check/id")
     public ResponseEntity<DataResponse<Boolean>> checkUserId(@Parameter(name = "userId") String userId) {
         boolean checkUserId = userRepository.existsByUserId(userId);
@@ -75,6 +76,7 @@ public class UserApiController {
 
     @Operation(summary = "이메일 중복 검사 API",
             description = "이메일 사용 가능 여부를 확인합니다.")
+    @NoneAuth
     @GetMapping("/api/v1/none/check/email")
     public ResponseEntity<DataResponse<Boolean>> checkEmail(@Parameter(name = "email") String email) {
         boolean checkEmail = userRepository.existsByEmailAndStatus(email, StatusType.ACTIVE);
