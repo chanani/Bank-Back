@@ -14,6 +14,9 @@ import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.exception.OperationErrorException;
 import com.bank.gugu.global.exception.dto.ErrorCode;
 import com.bank.gugu.global.jwt.JWTProvider;
+import com.bank.gugu.global.regex.Regex;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,6 +41,8 @@ public class DefaultUserService implements UserService {
         checkUserId(request.userId());
         // 비밀번호 일치 여부 확인
         equalPassword(request.password(), request.passwordCheck());
+        // 이메일 중복 검사
+        checkEmail(request.email());
         // Entity로 변환
         User newUser = request.toEntity();
         // 회원가입
@@ -112,6 +117,15 @@ public class DefaultUserService implements UserService {
         }
     }
 
+    /**
+     * 회원 이메일 중복 체크
+     * @param email 회원 이메일
+     */
+    private void checkEmail(String email) {
+        if (userRepository.existsByUserEmail(email)) {
+            throw new OperationErrorException(ErrorCode.EXISTS_USER_ID);
+        }
+    }
 
 
 }

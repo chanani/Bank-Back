@@ -29,6 +29,8 @@ public class User extends BaseEntity {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "email")
+    private String email;
 
     /**
      * 비밀번호 변경

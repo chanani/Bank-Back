@@ -22,12 +22,18 @@ public record JoinRequest(
         @Schema(description = "비밀번호 확인", example = "zxc123!@#")
         @Pattern(regexp = Regex.PASSWORD, message = "비밀번호 형식을 확인해주세요.")
         @NotBlank(message = "비밀번호 확인은 필수입니다.")
-        String passwordCheck
+        String passwordCheck,
+
+        @Schema(description = "이메일", example = "chanhan12@naver.com")
+        @Pattern(regexp = Regex.EMAIL, message = "이메일 형식을 확인해주세요.")
+        @NotBlank(message = "이메일은 필수입니다.")
+        String email
 ) {
     // Entity 생성 시 비밀번호 암호화 진행
     public User toEntity() {
         return User.builder()
                 .userId(this.userId)
+                .email(this.email)
                 .password(new BCryptPasswordEncoder().encode(this.password))
                 .build();
     }
