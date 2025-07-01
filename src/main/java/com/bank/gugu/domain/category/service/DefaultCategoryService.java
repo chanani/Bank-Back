@@ -189,7 +189,7 @@ public class DefaultCategoryService implements CategoryService {
 
                 // 수입
                 new Category(user, RecordType.DEPOSIT, "월급", 14, icons.get("money").getFirst()),
-                new Category(user, RecordType.DEPOSIT, "용돈", 15, icons.get("coin").getFirst()),
+                new Category(user, RecordType.DEPOSIT, "용돈", 15, icons.get("coin").getFirst())
         );
     }
 }
