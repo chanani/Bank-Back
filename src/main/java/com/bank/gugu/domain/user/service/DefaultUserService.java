@@ -1,8 +1,6 @@
 package com.bank.gugu.domain.user.service;
 
-import com.bank.gugu.domain.category.repository.CategoryRepository;
 import com.bank.gugu.domain.category.service.CategoryService;
-import com.bank.gugu.entity.category.Category;
 import com.bank.gugu.entity.common.constant.StatusType;
 import com.bank.gugu.domain.user.repository.UserRepository;
 import com.bank.gugu.domain.user.service.dto.request.JoinRequest;
@@ -14,9 +12,6 @@ import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.exception.OperationErrorException;
 import com.bank.gugu.global.exception.dto.ErrorCode;
 import com.bank.gugu.global.jwt.JWTProvider;
-import com.bank.gugu.global.regex.Regex;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -122,7 +117,7 @@ public class DefaultUserService implements UserService {
      * @param email 회원 이메일
      */
     private void checkEmail(String email) {
-        if (userRepository.existsByUserEmail(email)) {
+        if (userRepository.existsByEmailAndStatus(email, StatusType.ACTIVE)) {
             throw new OperationErrorException(ErrorCode.EXISTS_USER_ID);
         }
     }
