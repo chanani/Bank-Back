@@ -22,4 +22,7 @@ public class Icon extends BaseEntity {
 
     @Column(name = "path")
     private String path;
+
+    @Column(name = "name")
+    private String name;
 }

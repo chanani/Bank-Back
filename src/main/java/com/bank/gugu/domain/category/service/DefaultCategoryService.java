@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -165,32 +167,29 @@ public class DefaultCategoryService implements CategoryService {
      * 기본 카테고리 목록
      */
     public List<Category> defaultCategories(User user) {
-        List<Icon> icons = iconRepository.findAll();
+        Map<String, List<Icon>> icons = iconRepository.findAll().stream()
+                .collect(Collectors.groupingBy(Icon::getName));
 
         return List.of(
                 // 지출
-                new Category(user, RecordType.WITHDRAW, "주거비", 0, icons.get(0)),
-                new Category(user, RecordType.WITHDRAW, "식비", 1, icons.get(1)),
-                new Category(user, RecordType.WITHDRAW, "교통", 2, icons.get(2)),
-                new Category(user, RecordType.WITHDRAW, "공과금", 3, icons.get(3)),
-                new Category(user, RecordType.WITHDRAW, "의료비", 4, icons.get(4)),
-                new Category(user, RecordType.WITHDRAW, "문화생활", 5, icons.get(5)),
-                new Category(user, RecordType.WITHDRAW, "생필품/마트", 6, icons.get(6)),
-                new Category(user, RecordType.WITHDRAW, "선물/경조사", 7, icons.get(7)),
-                new Category(user, RecordType.WITHDRAW, "구독료", 8, icons.get(8)),
-                new Category(user, RecordType.WITHDRAW, "통신비", 9, icons.get(9)),
-                new Category(user, RecordType.WITHDRAW, "운동", 10, icons.get(10)),
-                new Category(user, RecordType.WITHDRAW, "교육", 11, icons.get(11)),
-                new Category(user, RecordType.WITHDRAW, "미용", 12, icons.get(12)),
-                new Category(user, RecordType.WITHDRAW, "의류", 13, icons.get(13)),
-                new Category(user, RecordType.WITHDRAW, "여행", 14, icons.get(14)),
-                new Category(user, RecordType.WITHDRAW, "육아", 15, icons.get(15)),
+                new Category(user, RecordType.WITHDRAW, "주거비", 0, icons.get("house").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "식비", 1, icons.get("food").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "교통", 2, icons.get("bus").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "공과금", 3, icons.get("paper").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "의료비", 4, icons.get("hospital").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "여행", 5, icons.get("airplain").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "생필품/마트", 6, icons.get("cart").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "선물/경조사", 7, icons.get("present").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "구독료", 8, icons.get("netflix").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "통신비", 9, icons.get("phone").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "운동", 10, icons.get("health2").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "교육", 11, icons.get("study").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "미용", 12, icons.get("hair").getFirst()),
+                new Category(user, RecordType.WITHDRAW, "의류", 13, icons.get("shirt").getFirst()),
 
                 // 수입
-                new Category(user, RecordType.DEPOSIT, "월급", 16, icons.get(16)),
-                new Category(user, RecordType.DEPOSIT, "용돈", 17, icons.get(17)),
-                new Category(user, RecordType.DEPOSIT, "보너스/상여금", 18, icons.get(18)),
-                new Category(user, RecordType.DEPOSIT, "부수입", 19, icons.get(19))
+                new Category(user, RecordType.DEPOSIT, "월급", 14, icons.get("money").getFirst()),
+                new Category(user, RecordType.DEPOSIT, "용돈", 15, icons.get("coin").getFirst()),
         );
     }
 }
