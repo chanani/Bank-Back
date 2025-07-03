@@ -5,6 +5,7 @@ import com.bank.gugu.domain.assetsDetail.service.request.AssetsDetailCreateReque
 import com.bank.gugu.domain.assetsDetail.service.request.AssetsDetailUpdateRequest;
 import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailResponse;
 import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailsResponse;
+import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailsTotalResponse;
 import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.page.PageInput;
 import jakarta.validation.Valid;
@@ -40,7 +41,7 @@ public interface AssetsDetailService {
      * @param user 로그인 회원 객체
      * @return 무한스크롤된 자산 상세 정보
      */
-    Slice<AssetsDetailsResponse> getAssetsDetails(PageInput pageInput, AssetsDetailsInput input, User user);
+    AssetsDetailsTotalResponse getAssetsDetails(PageInput pageInput, AssetsDetailsInput input, User user);
 
     /**
      * 자산 상세정보 조회

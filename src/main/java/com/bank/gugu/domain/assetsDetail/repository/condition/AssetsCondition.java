@@ -4,6 +4,9 @@ import com.bank.gugu.entity.common.constant.RecordType;
 import com.bank.gugu.global.query.record.Range;
 
 public record AssetsCondition (
+        // 계좌 식별자
+        Long assetsId,
+
         // 키워드
         String keyword,
 

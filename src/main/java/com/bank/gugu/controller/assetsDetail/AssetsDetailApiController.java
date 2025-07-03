@@ -6,6 +6,7 @@ import com.bank.gugu.domain.assetsDetail.service.request.AssetsDetailCreateReque
 import com.bank.gugu.domain.assetsDetail.service.request.AssetsDetailUpdateRequest;
 import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailResponse;
 import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailsResponse;
+import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailsTotalResponse;
 import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.page.PageInput;
 import com.bank.gugu.global.response.ApiResponse;
@@ -66,15 +67,15 @@ public class AssetsDetailApiController {
                     화면에서는 size 만큼 화면에 노출시키고, size 보다 1이클 때 다음 페이지를 요청해주세요.
                     """)
     @GetMapping("/api/v1/user/assets-details")
-    public ResponseEntity<Slice<AssetsDetailsResponse>> getAssetsDetails(
+    public ResponseEntity<DataResponse<AssetsDetailsTotalResponse>> getAssetsDetails(
             @Parameter(hidden = true) User user,
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @ParameterObject @ModelAttribute AssetsDetailsInput input
     ) {
         PageInput pageInput = PageInput.builder().page(page).size(size).build();
-        Slice<AssetsDetailsResponse> assetsDetails = assetsDetailService.getAssetsDetails(pageInput, input, user);
-        return ResponseEntity.ok(assetsDetails);
+        AssetsDetailsTotalResponse assetsDetails = assetsDetailService.getAssetsDetails(pageInput, input, user);
+        return ResponseEntity.ok(DataResponse.send(assetsDetails));
     }
 
     @Operation(summary = "자산 상세내역 조회 API",

@@ -1,6 +1,7 @@
 package com.bank.gugu.domain.assetsDetail.repository;
 
 import com.bank.gugu.domain.assetsDetail.repository.condition.AssetsCondition;
+import com.bank.gugu.entity.assets.QAssets;
 import com.bank.gugu.entity.assetsDetail.AssetsDetail;
 import com.bank.gugu.entity.common.constant.RecordType;
 import com.bank.gugu.entity.common.constant.StatusType;
@@ -8,6 +9,7 @@ import com.bank.gugu.entity.user.QUser;
 import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.query.record.Range;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -36,13 +38,21 @@ public class AssetsDetailRepositoryImpl implements AssetsDetailRepositoryCustom{
                         eqUser(user),
                         containKeyword(condition.keyword()),
                         eqType(condition.type()),
-                        eqRange(condition.range())
+                        eqRange(condition.range()),
+                        eqAssetsId(condition.assetsId())
                 )
                 .orderBy(checkSort(condition))
                 .orderBy(checkCreatedSort(condition))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetch();
+    }
+
+    /**
+     * 일치하는 계좌 정보
+     */
+    private BooleanExpression eqAssetsId(Long assetsId) {
+        return QAssets.assets.id.eq(assetsId);
     }
 
     /**

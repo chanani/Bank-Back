@@ -8,6 +8,7 @@ import com.bank.gugu.domain.assetsDetail.service.request.AssetsDetailCreateReque
 import com.bank.gugu.domain.assetsDetail.service.request.AssetsDetailUpdateRequest;
 import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailResponse;
 import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailsResponse;
+import com.bank.gugu.domain.assetsDetail.service.response.AssetsDetailsTotalResponse;
 import com.bank.gugu.domain.category.repository.CategoryRepository;
 import com.bank.gugu.domain.record.repository.RecordsRepository;
 import com.bank.gugu.entity.assets.Assets;
@@ -112,7 +113,9 @@ public class DefaultAssetsDetailService implements AssetsDetailService {
     }
 
     @Override
-    public Slice<AssetsDetailsResponse> getAssetsDetails(PageInput pageInput, AssetsDetailsInput input, User user) {
+    public AssetsDetailsTotalResponse getAssetsDetails(PageInput pageInput, AssetsDetailsInput input, User user) {
+        Assets findAssets = assetsRepository.findByIdAndStatus(input.assetsId(), StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_ASSETS));
         // input -> condition
         AssetsCondition condition = input.toCondition();
         // 페이징 객체 생성
@@ -125,7 +128,7 @@ public class DefaultAssetsDetailService implements AssetsDetailService {
         Pageable returnPageable = pageable.withPage(pageInput.page());
         // Slice 객체 생성
         Slice<AssetsDetailsResponse> pointDetailSlice = new SliceImpl<>(assetsDetails, returnPageable, hasNextPage(assetsDetails, pageable.getPageSize()));
-        return pointDetailSlice;
+        return new AssetsDetailsTotalResponse(findAssets, pointDetailSlice);
     }
 
     @Override

@@ -10,6 +10,9 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record AssetsDetailsInput(
+        @Schema(description = "계좌 아이디", example = "2")
+        Long assetsId,
+
         @Schema(description = "키워드", example = "입금")
         String keyword,
 
@@ -30,10 +33,13 @@ public record AssetsDetailsInput(
         String sort
 ) {
     public AssetsCondition toCondition() {
-        return new AssetsCondition(this.keyword,
+        return new AssetsCondition(
+                this.assetsId,
+                this.keyword,
                 this.type,
                 this.sort,
-                new Range(LocalDate.parse(this.startDate), LocalDate.parse(endDate)));
+                new Range(LocalDate.parse(this.startDate), LocalDate.parse(endDate))
+        );
     }
 
 }
