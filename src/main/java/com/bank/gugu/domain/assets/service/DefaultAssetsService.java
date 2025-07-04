@@ -56,7 +56,7 @@ public class DefaultAssetsService implements AssetsService {
     }
 
     @Override
-    public AssetsPageResponse getAssets(User user) {
+    public AssetsPageResponse getAssetsList(User user) {
         // 자산 목록 조회
         List<AssetsResponse> findAssets = assetsRepository.findAllByUserIdAndStatusOrderByOrdersAsc(user.getId(), StatusType.ACTIVE).stream()
                 .map(AssetsResponse::new)
@@ -67,5 +67,12 @@ public class DefaultAssetsService implements AssetsService {
                 .mapToInt(AssetsResponse::getBalance).sum();
 
         return new AssetsPageResponse(totalAssets, findAssets);
+    }
+
+    @Override
+    public AssetsResponse getAssets(Long assetsId) {
+        Assets findAssets = assetsRepository.findByIdAndStatus(assetsId, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_ASSETS));
+        return new AssetsResponse(findAssets);
     }
 }
