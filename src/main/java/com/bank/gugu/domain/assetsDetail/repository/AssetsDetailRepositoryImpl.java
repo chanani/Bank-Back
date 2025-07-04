@@ -91,7 +91,8 @@ public class AssetsDetailRepositoryImpl implements AssetsDetailRepositoryCustom{
      * 키워드 검색
      */
     private BooleanExpression containKeyword(String keyword) {
-        return assetsDetail.memo.containsIgnoreCase(keyword);
+        return assetsDetail.memo.containsIgnoreCase(keyword)
+                .or(assetsDetail.category.name.containsIgnoreCase(keyword));
     }
 
     /**
