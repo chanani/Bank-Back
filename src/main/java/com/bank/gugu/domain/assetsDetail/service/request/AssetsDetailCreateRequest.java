@@ -54,7 +54,7 @@ public record AssetsDetailCreateRequest(
                 .category(category)
                 .type(this.type)
                 .priceType(this.priceType)
-                .price(this.price)
+                .price(this.type.equals(RecordType.DEPOSIT) ? this.price : -this.price)
                 .balance(this.type.equals(RecordType.DEPOSIT) ?
                         assets.getBalance() + price :
                         assets.getBalance() - price)
