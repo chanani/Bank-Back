@@ -2,6 +2,7 @@ package com.bank.gugu.domain.assetsDetail.service.response;
 
 import com.bank.gugu.entity.assetsDetail.AssetsDetail;
 import com.bank.gugu.entity.common.constant.BooleanYn;
+import com.bank.gugu.entity.common.constant.PriceType;
 import com.bank.gugu.entity.common.constant.RecordType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -32,6 +33,12 @@ public class AssetsDetailResponse {
     @Schema(description = "활성화 여부")
     private boolean active;
 
+    @Schema(description = "결제 유형")
+    private PriceType priceType;
+
+    @Schema(description = "카테고리 ID")
+    private Long categoryId;
+
     public AssetsDetailResponse(AssetsDetail assetsDetail) {
         this.id = assetsDetail.getId();
         this.type = String.valueOf(assetsDetail.getType());
@@ -40,5 +47,7 @@ public class AssetsDetailResponse {
         this.useDate = assetsDetail.getUseDate();
         this.memo = assetsDetail.getMemo();
         this.active = assetsDetail.getActive().equals(BooleanYn.Y);
+        this.priceType = assetsDetail.getPriceType();
+        this.categoryId = assetsDetail.getCategory().getId();
     }
 }
