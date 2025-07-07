@@ -65,11 +65,7 @@ public class Assets extends BaseEntity {
      * 잔액 변경
      */
     public void updateBalance(AssetsDetail assetsDetail) {
-        if (assetsDetail.getType().equals(RecordType.DEPOSIT)) {
-            this.balance = this.balance + assetsDetail.getPrice();
-        } else if (assetsDetail.getType().equals(RecordType.WITHDRAW)) {
-            this.balance = this.balance - assetsDetail.getPrice();
-        }
+        this.balance = this.balance + assetsDetail.getPrice();
     }
 
     /**
