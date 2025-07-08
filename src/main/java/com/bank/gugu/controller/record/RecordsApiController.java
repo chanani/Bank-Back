@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class RecordsApiController {
             @Valid @RequestPart RecordCreateRequest request,
             @Parameter(hidden = true) User user,
             @RequestPart(value = "files", required = false) List<MultipartFile> inputFiles
-    ) {
+    ) throws IOException {
         recordsService.addRecord(request, user, inputFiles);
         return ResponseEntity.ok(ApiResponse.ok());
     }
@@ -62,7 +63,7 @@ public class RecordsApiController {
             @PathVariable(name = "recordsId") Long recordsId,
             @RequestPart(value = "files", required = false) List<MultipartFile> inputFiles,
             @Parameter(hidden = true) User user
-    ) {
+    ) throws IOException {
         recordsService.updateRecord(request, recordsId, inputFiles, user);
         return ResponseEntity.ok(ApiResponse.ok());
     }

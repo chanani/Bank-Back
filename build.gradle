@@ -79,6 +79,8 @@ dependencies {
     // excel
     implementation 'org.apache.poi:poi-ooxml:5.4.1'
 
+    // file resize
+    implementation 'net.coobird:thumbnailator:0.4.14'
 
 }
 

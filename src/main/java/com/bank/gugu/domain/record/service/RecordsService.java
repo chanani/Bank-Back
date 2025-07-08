@@ -11,6 +11,7 @@ import com.bank.gugu.entity.user.User;
 import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public interface RecordsService {
      * @param user    로그인 회원 객체
      * @param inputFiles 업로드 이미지 요청 객체
      */
-    void addRecord(RecordCreateRequest request, User user, List<MultipartFile> inputFiles);
+    void addRecord(RecordCreateRequest request, User user, List<MultipartFile> inputFiles) throws IOException;
 
     /**
      * 입/출금 내역 삭제
@@ -40,7 +41,7 @@ public interface RecordsService {
      * @param inputFiles 업로드 이미지 요청 객체
      * @param user 로그인 회원 객체
      */
-    void updateRecord(RecordUpdateRequest request, Long recordsId, List<MultipartFile> inputFiles, User user);
+    void updateRecord(RecordUpdateRequest request, Long recordsId, List<MultipartFile> inputFiles, User user) throws IOException;
 
     /**
      * 입/출금 내역 조회(하루)

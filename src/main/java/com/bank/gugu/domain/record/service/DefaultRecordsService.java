@@ -28,13 +28,16 @@ import com.bank.gugu.global.util.FileUtil;
 import com.bank.gugu.global.util.dto.FileName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,7 +58,7 @@ public class DefaultRecordsService implements RecordsService {
 
     @Override
     @Transactional
-    public void addRecord(RecordCreateRequest request, User user, List<MultipartFile> inputFiles) {
+    public void addRecord(RecordCreateRequest request, User user, List<MultipartFile> inputFiles) throws IOException {
         // 카테고리 조회
         Category findCategory = categoryRepository.findByIdAndStatus(request.categoryId(), StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
@@ -79,9 +82,23 @@ public class DefaultRecordsService implements RecordsService {
             // 자산 그룹 합계 금액 업데이트
             findAssets.updateBalance(newAssetsDetailEntity);
         }
-        if(inputFiles != null && !inputFiles.isEmpty()) {
+
+
+        if (inputFiles != null && !inputFiles.isEmpty()) {
+            // 리사이징된 파일들을 저장할 리스트
+            List<MultipartFile> resizedFiles = new ArrayList<>();
+
+            // 확장자 체크(png, jpg, jpeg)
+            for (MultipartFile inputFile : inputFiles) {
+                fileUtil.existsImageFileExtension(inputFile);
+
+                // File size Resizing
+                MultipartFile resizedFile = fileUtil.resizeImage(inputFile);
+                resizedFiles.add(resizedFile);
+            }
+
             // 서버에 이미지 업로드
-            List<FileName> fileNames = fileUtil.fileListUpload(inputFiles, "fileImage");
+            List<FileName> fileNames = fileUtil.filesUpload(resizedFiles, "fileImage");
             List<RecordsImage> recordsImages = new ArrayList<>();
             // recordsImage 테이블에 등록
             for (FileName fileName : fileNames) {
@@ -118,7 +135,7 @@ public class DefaultRecordsService implements RecordsService {
 
     @Override
     @Transactional
-    public void updateRecord(RecordUpdateRequest request, Long recordsId, List<MultipartFile> inputFiles, User user) {
+    public void updateRecord(RecordUpdateRequest request, Long recordsId, List<MultipartFile> inputFiles, User user) throws IOException {
         // 카테고리 조회
         Category findCategory = categoryRepository.findByIdAndStatus(request.categoryId(), StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
@@ -145,7 +162,7 @@ public class DefaultRecordsService implements RecordsService {
 
         // 삭제할 이미지 있을 경우 데이터 삭제
         List<Long> deleteIds = request.deleteImages();
-        if(request.deleteImages() != null && !request.deleteImages().isEmpty()) {
+        if (request.deleteImages() != null && !request.deleteImages().isEmpty()) {
             List<RecordsImage> findRecordImages = recordsImageRepository.findByIdInAndStatus(deleteIds, StatusType.ACTIVE);
             for (RecordsImage findRecordImage : findRecordImages) {
                 findRecordImage.remove();
@@ -153,9 +170,17 @@ public class DefaultRecordsService implements RecordsService {
         }
 
         // 업로드할 이미지 있을 경우 이미지 업로드
-        if(inputFiles != null && !inputFiles.isEmpty()) {
+        if (inputFiles != null && !inputFiles.isEmpty()) {
+            List<MultipartFile> resizedFiles = new ArrayList<>();
+            // 확장자 체크(png, jpg, jpeg)
+            for (MultipartFile inputFile : inputFiles) {
+                fileUtil.existsImageFileExtension(inputFile);
+                // File size Resizing
+                MultipartFile resizedFile = fileUtil.resizeImage(inputFile);
+                resizedFiles.add(resizedFile);
+            }
             // 서버에 이미지 업로드
-            List<FileName> fileNames = fileUtil.fileListUpload(inputFiles, "fileImage");
+            List<FileName> fileNames = fileUtil.filesUpload(resizedFiles, "fileImage");
             List<RecordsImage> recordsImages = new ArrayList<>();
             // recordsImage 테이블에 등록
             for (FileName fileName : fileNames) {
