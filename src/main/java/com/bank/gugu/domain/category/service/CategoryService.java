@@ -4,6 +4,7 @@ import com.bank.gugu.domain.category.service.dto.request.CategoryCreateRequest;
 import com.bank.gugu.domain.category.service.dto.request.CategoryUpdateOrderRequest;
 import com.bank.gugu.domain.category.service.dto.request.CategoryUpdateRequest;
 import com.bank.gugu.domain.category.service.dto.response.CategoriesResponse;
+import com.bank.gugu.domain.category.service.dto.response.CategoryResponse;
 import com.bank.gugu.entity.common.constant.RecordType;
 import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.page.Page;
@@ -56,7 +57,7 @@ public interface CategoryService {
      * @param categoryId 카테고리 식별자
      * @return 카테고리 상세 정보
      */
-    CategoriesResponse getCategory(Long categoryId);
+    CategoryResponse getCategory(Long categoryId);
 
     /**
      * 카테고리 순서 변경

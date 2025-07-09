@@ -5,6 +5,7 @@ import com.bank.gugu.domain.category.service.dto.request.CategoryCreateRequest;
 import com.bank.gugu.domain.category.service.dto.request.CategoryUpdateOrderRequest;
 import com.bank.gugu.domain.category.service.dto.request.CategoryUpdateRequest;
 import com.bank.gugu.domain.category.service.dto.response.CategoriesResponse;
+import com.bank.gugu.domain.category.service.dto.response.CategoryResponse;
 import com.bank.gugu.domain.icon.repository.IconRepository;
 import com.bank.gugu.entity.category.Category;
 import com.bank.gugu.entity.common.constant.RecordType;
@@ -97,10 +98,10 @@ public class DefaultCategoryService implements CategoryService {
     }
 
     @Override
-    public CategoriesResponse getCategory(Long categoryId) {
+    public CategoryResponse getCategory(Long categoryId) {
         Category findCategory = categoryRepository.findByIdAndStatus(categoryId, StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
-        return new CategoriesResponse(findCategory);
+        return new CategoryResponse(findCategory);
     }
 
     @Override

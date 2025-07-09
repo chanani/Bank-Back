@@ -5,6 +5,7 @@ import com.bank.gugu.domain.category.service.dto.request.CategoryCreateRequest;
 import com.bank.gugu.domain.category.service.dto.request.CategoryUpdateOrderRequest;
 import com.bank.gugu.domain.category.service.dto.request.CategoryUpdateRequest;
 import com.bank.gugu.domain.category.service.dto.response.CategoriesResponse;
+import com.bank.gugu.domain.category.service.dto.response.CategoryResponse;
 import com.bank.gugu.entity.common.constant.RecordType;
 import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.response.ApiResponse;
@@ -73,10 +74,10 @@ public class CategoryApiController {
     @Operation(summary = "카테고리 상세 정보 조회 API",
             description = "카테고리의 상세 정보를 조회합니다.")
     @GetMapping("/api/v1/user/categories/{categoryId}")
-    public ResponseEntity<DataResponse<CategoriesResponse>> getCategory(
+    public ResponseEntity<DataResponse<CategoryResponse>> getCategory(
             @PathVariable(name = "categoryId") Long categoryId
     ) {
-        CategoriesResponse categories = categoryService.getCategory(categoryId);
+        CategoryResponse categories = categoryService.getCategory(categoryId);
         return ResponseEntity.ok(DataResponse.send(categories));
     }
 
