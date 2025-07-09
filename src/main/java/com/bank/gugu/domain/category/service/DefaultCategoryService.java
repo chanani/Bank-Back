@@ -97,6 +97,13 @@ public class DefaultCategoryService implements CategoryService {
     }
 
     @Override
+    public CategoriesResponse getCategory(Long categoryId) {
+        Category findCategory = categoryRepository.findByIdAndStatus(categoryId, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+        return new CategoriesResponse(findCategory);
+    }
+
+    @Override
     @Transactional
     public void updateOrder(CategoryUpdateOrderRequest request, User user) {
         Integer currentOrder = request.currentOrder();

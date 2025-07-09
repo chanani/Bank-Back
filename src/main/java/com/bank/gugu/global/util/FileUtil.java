@@ -118,6 +118,11 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 이미지 리사이즈
+     * @param originalFile 원본파일
+     * @return MultipartFile 객체
+     */
     public MultipartFile resizeImage(MultipartFile originalFile) throws IOException {
         // 원본 파일을 InputStream으로 읽기
         InputStream inputStream = originalFile.getInputStream();
@@ -129,7 +134,7 @@ public class FileUtil {
         Thumbnails.of(inputStream)
                 .size(800, 600)
                 .outputFormat("jpg")
-                .outputQuality(0.9f)  // 품질 80%
+                .outputQuality(1.0f)  // 품질 80%
                 .toOutputStream(outputStream);
 
         // 리사이징된 이미지를 MultipartFile로 변환

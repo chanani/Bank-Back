@@ -52,9 +52,18 @@ public interface CategoryService {
     List<CategoriesResponse> getCategories(User user, RecordType type);
 
     /**
+     * 카테고리 상세정보 조회
+     * @param categoryId 카테고리 식별자
+     * @return 카테고리 상세 정보
+     */
+    CategoriesResponse getCategory(Long categoryId);
+
+    /**
      * 카테고리 순서 변경
      * @param request 변경 요청 객체
      * @param user 로그인 회원 객체
      */
     void updateOrder(@Valid CategoryUpdateOrderRequest request, User user);
+
+
 }

@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.bank.gugu.entity.user.QUser.user;
+
 @Tag(name = "Category API Controller", description = "카테고리 관련 API를 제공합니다.")
 @RestController
 @RequiredArgsConstructor
@@ -60,11 +62,21 @@ public class CategoryApiController {
     @Operation(summary = "카테고리 조회 API",
             description = "카테고리를 조회합니다.")
     @GetMapping("/api/v1/user/categories")
-    public ResponseEntity<DataResponse<List<CategoriesResponse>>> updateCategory(
+    public ResponseEntity<DataResponse<List<CategoriesResponse>>> getCategories(
             @Parameter(hidden = true) User user,
             @Parameter(name = "type") RecordType type
     ) {
         List<CategoriesResponse> categories = categoryService.getCategories(user, type);
+        return ResponseEntity.ok(DataResponse.send(categories));
+    }
+
+    @Operation(summary = "카테고리 상세 정보 조회 API",
+            description = "카테고리의 상세 정보를 조회합니다.")
+    @GetMapping("/api/v1/user/categories/{categoryId}")
+    public ResponseEntity<DataResponse<CategoriesResponse>> getCategory(
+            @PathVariable(name = "categoryId") Long categoryId
+    ) {
+        CategoriesResponse categories = categoryService.getCategory(categoryId);
         return ResponseEntity.ok(DataResponse.send(categories));
     }
 
