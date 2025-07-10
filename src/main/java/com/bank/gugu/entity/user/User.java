@@ -39,4 +39,13 @@ public class User extends BaseEntity {
         this.password = new BCryptPasswordEncoder().encode(password);
     }
 
+    /**
+     * 회원 정보 변경
+     */
+    public void updatePInfo(User user) {
+        if (user.email != null) {
+            this.email = user.getEmail();
+        }
+    }
+
 }

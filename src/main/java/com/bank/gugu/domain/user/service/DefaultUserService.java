@@ -1,6 +1,7 @@
 package com.bank.gugu.domain.user.service;
 
 import com.bank.gugu.domain.category.service.CategoryService;
+import com.bank.gugu.domain.user.service.dto.request.UserUpdateInfoRequest;
 import com.bank.gugu.entity.common.constant.StatusType;
 import com.bank.gugu.domain.user.repository.UserRepository;
 import com.bank.gugu.domain.user.service.dto.request.JoinRequest;
@@ -85,6 +86,17 @@ public class DefaultUserService implements UserService {
         User findUser = userRepository.findByIdAndStatus(user.getId(), StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         return new UserInfoResponse(findUser);
+    }
+
+    @Override
+    @Transactional
+    public void updateUserInfo(UserUpdateInfoRequest request, User user) {
+        // 회원 정보 조회
+        User findUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+        // dto to Entity
+        User newEntity = request.toEntity();
+        findUser.updatePInfo(newEntity);
     }
 
     /**

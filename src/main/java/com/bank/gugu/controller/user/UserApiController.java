@@ -4,6 +4,7 @@ import com.bank.gugu.domain.user.repository.UserRepository;
 import com.bank.gugu.domain.user.service.UserService;
 import com.bank.gugu.domain.user.service.dto.request.JoinRequest;
 import com.bank.gugu.domain.user.service.dto.request.LoginRequest;
+import com.bank.gugu.domain.user.service.dto.request.UserUpdateInfoRequest;
 import com.bank.gugu.domain.user.service.dto.request.UserUpdatePasswordRequest;
 import com.bank.gugu.domain.user.service.dto.response.LoginResponse;
 import com.bank.gugu.domain.user.service.dto.response.UserInfoResponse;
@@ -55,13 +56,24 @@ public class UserApiController {
     }
 
     @Operation(summary = "비밀번호 수정 API",
-            description = "비밀번호 수정합니다.")
+            description = "비밀번호를 수정합니다.")
     @PutMapping("/api/v1/user/update-password")
     public ResponseEntity<ApiResponse> updateUserPassword(
             @Valid @RequestBody UserUpdatePasswordRequest request,
             @Parameter(hidden = true) User user
     ) {
         userService.updateUserPassword(request, user);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
+    @Operation(summary = "회원정보 수정 API",
+            description = "회원정보를 수정합니다.")
+    @PutMapping("/api/v1/user/info")
+    public ResponseEntity<ApiResponse> updateUserInfo(
+            @Valid @RequestBody UserUpdateInfoRequest request,
+            @Parameter(hidden = true) User user
+    ) {
+        userService.updateUserInfo(request, user);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 

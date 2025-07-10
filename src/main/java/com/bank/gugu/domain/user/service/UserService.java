@@ -2,6 +2,7 @@ package com.bank.gugu.domain.user.service;
 
 import com.bank.gugu.domain.user.service.dto.request.JoinRequest;
 import com.bank.gugu.domain.user.service.dto.request.LoginRequest;
+import com.bank.gugu.domain.user.service.dto.request.UserUpdateInfoRequest;
 import com.bank.gugu.domain.user.service.dto.request.UserUpdatePasswordRequest;
 import com.bank.gugu.domain.user.service.dto.response.LoginResponse;
 import com.bank.gugu.domain.user.service.dto.response.UserInfoResponse;
@@ -42,4 +43,11 @@ public interface UserService {
     UserInfoResponse getInfo(User user);
 
 
+    /**
+     * 회원 정보 수정
+     *
+     * @param request 수정 요청 객체
+     * @param user    로그인 횡뤈 객체
+     */
+    void updateUserInfo(UserUpdateInfoRequest request, User user);
 }
