@@ -106,27 +106,24 @@ public class DefaultCategoryService implements CategoryService {
 
     @Override
     @Transactional
-    public void updateOrder(CategoryUpdateOrderRequest request, User user) {
-        Integer currentOrder = request.currentOrder();
-        Integer requestOrder = request.requestOrder();
+    public void updateOrder(List<CategoryUpdateOrderRequest> request, User user) {
+        // 카테고리 목록 조회
+        List<Category> categories = categoryRepository.findAllByUserIdAndStatus(user.getId(), StatusType.ACTIVE);
 
-        // 현재 순서의 카테고리 조회
-        Category targetCategory = categoryRepository.findByUserAndOrders(user, currentOrder)
-                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+        // 요청받은 순서 업데이트 정보를 Map으로 변환 (빠른 검색을 위해)
+        Map<Long, Integer> orderUpdateMap = request.stream()
+                .collect(Collectors.toMap(
+                        CategoryUpdateOrderRequest::id,
+                        CategoryUpdateOrderRequest::order
+                ));
 
-        // 요청 순서가 현재 순서와 같으면 변경할 필요 없음
-        if (currentOrder.equals(requestOrder)) {
-            return;
-        }
-
-        // 순서 변경 로직 실행
-        if (currentOrder < requestOrder) {
-            // 현재 순서가 요청 순서보다 작을 때 (뒤로 이동)
-            moveBackward(user, targetCategory, currentOrder, requestOrder);
-        } else {
-            // 현재 순서가 요청 순서보다 클 때 (앞으로 이동)
-            moveForward(user, targetCategory, currentOrder, requestOrder);
-        }
+        // 각 카테고리의 순서 업데이트
+        categories.stream()
+                .filter(category -> orderUpdateMap.containsKey(category.getId()))
+                .forEach(category -> {
+                    Integer newOrder = orderUpdateMap.get(category.getId());
+                    category.updateOrder(newOrder);
+                });
     }
 
     /**

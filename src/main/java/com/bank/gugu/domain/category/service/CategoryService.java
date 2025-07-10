@@ -64,7 +64,7 @@ public interface CategoryService {
      * @param request 변경 요청 객체
      * @param user 로그인 회원 객체
      */
-    void updateOrder(@Valid CategoryUpdateOrderRequest request, User user);
+    void updateOrder(List<CategoryUpdateOrderRequest> request, User user);
 
 
 }

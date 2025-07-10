@@ -85,9 +85,10 @@ public class CategoryApiController {
             description = "카테고리 순서를 변경합니다.")
     @PutMapping("/api/v1/user/categories-order")
     public ResponseEntity<ApiResponse> updateCategoryOrder(
-            @Valid @RequestBody CategoryUpdateOrderRequest request,
+            @Valid @RequestBody List<CategoryUpdateOrderRequest> request,
             @Parameter(hidden = true) User user
     ) {
+        System.out.println(request.toString());
         categoryService.updateOrder(request, user);
         return ResponseEntity.ok(ApiResponse.ok());
     }

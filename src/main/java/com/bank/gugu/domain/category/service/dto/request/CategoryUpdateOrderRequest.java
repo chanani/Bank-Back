@@ -4,13 +4,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 public record CategoryUpdateOrderRequest(
-        @Schema(description = "현재순서", example = "2")
+        @Schema(description = "카테고리 ID", example = "1")
         @NotNull(message = "현재 순서는 필수입니다.")
-        Integer currentOrder,
+        Long id,
 
         @Schema(description = "변경할 순서", example = "5")
         @NotNull(message = "변경할 순서는 필수입니다.")
-        Integer requestOrder
+        Integer order
 ) {
 
 

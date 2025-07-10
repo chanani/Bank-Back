@@ -24,4 +24,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("SELECT c.orders FROM Category c WHERE c.user = :user AND c.status = :status ORDER BY c.orders DESC LIMIT 1")
     Optional<Integer> findTopOrdersByUserAndStatus(@Param("user") User user, @Param("status") StatusType status);
+
+    List<Category> findAllByUserIdAndStatus(Long id, StatusType statusType);
 }
