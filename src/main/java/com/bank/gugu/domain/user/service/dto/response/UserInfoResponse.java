@@ -9,7 +9,11 @@ public class UserInfoResponse {
     @Schema(description = "아이디")
     private String userId;
 
+    @Schema(description = "이메일")
+    private String email;
+
     public UserInfoResponse(User user) {
         this.userId = user.getUserId();
+        this.email = user.getEmail();
     }
 }

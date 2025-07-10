@@ -17,6 +17,8 @@ import com.bank.gugu.entity.BaseEntity;
 import com.bank.gugu.entity.assets.Assets;
 import com.bank.gugu.entity.assetsDetail.AssetsDetail;
 import com.bank.gugu.entity.category.Category;
+import com.bank.gugu.entity.common.constant.BooleanYn;
+import com.bank.gugu.entity.common.constant.RecordType;
 import com.bank.gugu.entity.common.constant.StatusType;
 import com.bank.gugu.entity.records.Records;
 import com.bank.gugu.entity.recordsImage.RecordsImage;
@@ -139,24 +141,50 @@ public class DefaultRecordsService implements RecordsService {
         // 카테고리 조회
         Category findCategory = categoryRepository.findByIdAndStatus(request.categoryId(), StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+
         // assets entity 조회
         Assets findAssets = null;
         if (request.assetsId() != null && request.assetsId() > 0) {
             findAssets = assetsRepository.findByIdAndStatus(request.assetsId(), StatusType.ACTIVE)
                     .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_ASSETS));
         }
+
         // dto -> entity
         Records newEntity = request.toEntity(findCategory, findAssets);
+
         // record Entity 조회
         Records findRecord = recordsRepository.findByIdAndStatus(recordsId, StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_RECORDS));
+
         // 자산 내역 수정
         if (findRecord.getAssets() != null) {
             assetsRepository.findByIdAndStatus(findRecord.getAssets().getId(), StatusType.ACTIVE)
                     .ifPresent(assets -> assets.updateRecordBalance(findRecord, newEntity));
             assetsDetailRepository.findByRecordIdAndStatus(findRecord.getId(), StatusType.ACTIVE)
                     .ifPresent(assetsDetail -> assetsDetail.updateRecordPrice(newEntity));
+        } else if (request.assetsId() != null && request.assetsId() > 0) {
+            // dto -> assets Entity
+            AssetsDetail newAssetDetail = AssetsDetail.builder()
+                    .user(user)
+                    .assets(findAssets)
+                    .priceType(request.priceType())
+                    .category(findCategory)
+                    .record(findRecord)
+                    .type(request.type())
+                    .price(request.type().equals(RecordType.DEPOSIT) ? request.price() : -request.price())
+                    .active(BooleanYn.Y)
+                    .useDate(LocalDate.parse(request.useDate()))
+                    .memo(request.memo())
+                    .balance(request.type().equals(RecordType.DEPOSIT) ?
+                            findAssets.getBalance() + request.price() :
+                            findAssets.getBalance() - request.price())
+                    .build();
+            // 등록
+            assetsDetailRepository.save(newAssetDetail);
+            // 자산 그룹 합계 금액 업데이트
+            findAssets.updateBalance(newAssetDetail);
         }
+
         // 수정
         findRecord.update(newEntity);
 
