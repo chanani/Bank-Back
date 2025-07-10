@@ -13,6 +13,9 @@ public class CategoriesResponse {
     @Schema(description = "카테고리명")
     private String name;
 
+    @Schema(description = "아이콘  ID")
+    private Long iconId;
+
     @Schema(description = "아이콘 경로")
     private String iconPath;
 
@@ -22,6 +25,7 @@ public class CategoriesResponse {
     public CategoriesResponse(Category category) {
         this.id = category.getId();
         this.name = category.getName();
+        this.iconId = category.getIcon().getId() != null ? category.getIcon().getId() : null;
         this.iconPath = category.getIcon() != null ? category.getIcon().getPath() : null;
         this.order = category.getOrders();
     }
