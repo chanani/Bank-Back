@@ -9,13 +9,13 @@ import java.util.List;
 public class RecordsImagesResponse {
 
     @Schema(description = "년-월")
-    private String yearMonth;
+    private String yearMonthDay;
 
     @Schema(description = "입/출금 이미지 목록")
     private List<RecordsImagesMonthResponse> recordsImages;
 
-    public RecordsImagesResponse(String yearMonth, List<RecordsImagesMonthResponse> recordsImages) {
-        this.yearMonth = yearMonth;
+    public RecordsImagesResponse(String yearMonthDay, List<RecordsImagesMonthResponse> recordsImages) {
+        this.yearMonthDay = yearMonthDay;
         this.recordsImages = recordsImages;
     }
 }
