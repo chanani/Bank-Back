@@ -247,7 +247,7 @@ public class DefaultRecordsService implements RecordsService {
         return groupedByDate.entrySet().stream()
                 .sorted(Map.Entry.<LocalDate, List<RecordsMonthResponse>>comparingByKey().reversed())
                 .map(entry -> new RecordsResponse(
-                        entry.getKey().toString(), // 또는 원하는 날짜 형식
+                        entry.getKey().toString(),
                         entry.getValue()
                 ))
                 .toList();

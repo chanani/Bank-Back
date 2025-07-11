@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface RecordsImageRepository extends JpaRepository<RecordsImage, Long> {
+public interface RecordsImageRepository extends JpaRepository<RecordsImage, Long>, RecordsImageRepositoryCustom {
     List<RecordsImage> findAllByRecordsAndStatus(Records findRecord, StatusType statusType);
 
     Optional<RecordsImage> findByIdAndStatus(Long id, StatusType statusType);
