@@ -17,7 +17,9 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +35,12 @@ public class DefaultGraphService implements GraphService {
         Range range = createRange(input);
         // input -> condition
         GraphsCondition condition = input.toCondition(range, user);
-        // 데이터 조회
-        List<GraphCategories> graphs = recordsRepository.findGraphQuery(condition);
+        // 데이터 조회 및 percent 기준으로 내림차순 정렬
+        List<GraphCategories> graphs = recordsRepository.findGraphQuery(condition)
+                .stream()
+                .sorted(Comparator.comparing(GraphCategories::getPercent).reversed())
+                .toList();
+
         Integer balance = graphs.stream().mapToInt(GraphCategories::getSumPrice).sum();
         return new GraphsResponse(balance, graphs);
     }

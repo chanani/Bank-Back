@@ -138,7 +138,6 @@ public class RecordsRepositoryImpl implements RecordsRepositoryCustom {
                         eqType(condition.type()),
                         notDeleteCategory()
                 )
-                .orderBy(records.price.sum().desc())
                 .groupBy(category.id, category.name, category.icon.path)
                 .fetch();
 
