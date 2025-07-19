@@ -5,6 +5,7 @@ import com.bank.gugu.domain.category.repository.CategoryRepository;
 import com.bank.gugu.domain.recordsFavorite.repository.RecordsFavoriteRepository;
 import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteCreateRequest;
 import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteUpdateRequest;
+import com.bank.gugu.domain.recordsFavorite.service.dto.respnose.RecordsFavoritesResponse;
 import com.bank.gugu.entity.assets.Assets;
 import com.bank.gugu.entity.category.Category;
 import com.bank.gugu.entity.common.constant.StatusType;
@@ -16,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -73,5 +76,14 @@ public class DefaultRecordsFavoriteService implements RecordsFavoriteService {
         RecordsFavorite newEntity = request.toEntity(user, findCategory, findAssets);
         // update
         findRecordsFavorite.update(newEntity);
+    }
+
+    @Override
+    public List<RecordsFavoritesResponse> getRecordsFavorites(User user) {
+        return recordsFavoriteRepository.findAllByUserAndStatusOrderById(user, StatusType.ACTIVE)
+                 .stream()
+                 .map(RecordsFavoritesResponse::new)
+                 .toList();
+
     }
 }

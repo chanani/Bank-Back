@@ -2,8 +2,10 @@ package com.bank.gugu.domain.recordsFavorite.service;
 
 import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteCreateRequest;
 import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteUpdateRequest;
+import com.bank.gugu.domain.recordsFavorite.service.dto.respnose.RecordsFavoritesResponse;
 import com.bank.gugu.entity.user.User;
-import jakarta.validation.Valid;
+
+import java.util.List;
 
 public interface RecordsFavoriteService {
     /**
@@ -26,4 +28,11 @@ public interface RecordsFavoriteService {
      * @param user 로그인 회원 객체
      */
     void updateRecordsFavorite(Long recordsFavoriteId, RecordsFavoriteUpdateRequest request, User user);
+
+    /**
+     * 입/출금 내역 즐겨찾기 목록 조회
+     * @param user 로그인 회원 객체
+     * @return 입/출금 내역 즐겨찾기 목록
+     */
+    List<RecordsFavoritesResponse> getRecordsFavorites(User user);
 }

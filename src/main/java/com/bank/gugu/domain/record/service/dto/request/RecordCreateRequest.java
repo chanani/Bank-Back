@@ -9,6 +9,7 @@ import com.bank.gugu.entity.common.constant.RecordType;
 import com.bank.gugu.entity.records.Records;
 import com.bank.gugu.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
@@ -33,6 +34,7 @@ public record RecordCreateRequest(
         String memo,
 
         @Schema(description = "날짜(yyyy-mm-dd)", example = "2025-06-26")
+        @NotBlank(message = "날짜는 필수입니다.")
         String useDate,
 
         @Schema(description = "카테고리 ID", example = "30")

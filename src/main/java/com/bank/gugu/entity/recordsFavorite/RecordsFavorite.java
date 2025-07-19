@@ -75,6 +75,9 @@ public class RecordsFavorite extends BaseEntity {
         if (newEntity.monthly != null) {
             this.monthly = newEntity.monthly;
         }
+        if (newEntity.type != null) {
+            this.type = newEntity.type;
+        }
         this.assets = newEntity.assets;
     }
 }
