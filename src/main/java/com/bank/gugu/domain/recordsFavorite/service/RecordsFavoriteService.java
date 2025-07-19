@@ -11,4 +11,10 @@ public interface RecordsFavoriteService {
      * @param user 로그인 회원 객체
      */
     void addRecordsFavorite(RecordsFavoriteCreateRequest request, User user);
+
+    /**
+     * 입/출금 내역 즐겨찾기 삭제
+     * @param recordsFavoriteId 입/출금 내역 즐겨찾기 식별자
+     */
+    void deleteRecordsFavorite(Long recordsFavoriteId);
 }

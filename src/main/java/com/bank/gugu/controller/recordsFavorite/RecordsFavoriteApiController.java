@@ -10,9 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Records Favorite API Controller", description = "입/출금 기록 관련 API를 제공합니다.")
 @RestController
@@ -28,6 +26,13 @@ public class RecordsFavoriteApiController {
             @Parameter(hidden = true)User user
             ) {
         recordsFavoriteService.addRecordsFavorite(request, user);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
+    @Operation(summary = "입/출금 내역 즐겨찾기 삭제 API", description = "입/출금 내역 즐겨찾기를 삭제합니다.")
+    @DeleteMapping(value = "/api/v1/user/records-favorite/{recordsFavoriteId}")
+    public ResponseEntity<ApiResponse> deleteRecordsFavorite(@PathVariable(name = "recordsFavoriteId") Long recordsFavoriteId) {
+        recordsFavoriteService.deleteRecordsFavorite(recordsFavoriteId);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 }

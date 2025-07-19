@@ -66,7 +66,9 @@ public enum ErrorCode {
 
     // 1300 ~ 1349 입/출금 관련 예외
     NOT_FOUND_RECORDS(1300, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 입/출금 내역입니다."),
-    NOT_FOUND_RECORDS_IMAGE(1301, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 이미지입니다.");
+    NOT_FOUND_RECORDS_IMAGE(1301, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 이미지입니다."),
+    NOT_FOUND_RECORDS_FAVORITE(1302, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 입/출금 내역 즐겨찾기입니다.");
+
 
 
 

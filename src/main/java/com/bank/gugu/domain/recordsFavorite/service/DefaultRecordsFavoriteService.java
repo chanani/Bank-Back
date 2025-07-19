@@ -42,4 +42,14 @@ public class DefaultRecordsFavoriteService implements RecordsFavoriteService {
         RecordsFavorite newEntity = request.toEntity(user, findCategory, findAssets);
         recordsFavoriteRepository.save(newEntity);
     }
+
+    @Override
+    @Transactional
+    public void deleteRecordsFavorite(Long recordsFavoriteId) {
+        // 즐겨찾기 조회
+        RecordsFavorite findRecordsFavorite = recordsFavoriteRepository.findByIdAndStatus(recordsFavoriteId, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_RECORDS_FAVORITE));
+        // 소프트 삭제
+        findRecordsFavorite.remove();
+    }
 }

@@ -1,5 +1,6 @@
 package com.bank.gugu.entity.recordsFavorite;
 
+import com.bank.gugu.entity.BaseEntity;
 import com.bank.gugu.entity.assets.Assets;
 import com.bank.gugu.entity.category.Category;
 import com.bank.gugu.entity.common.constant.PriceType;
@@ -20,7 +21,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class RecordsFavorite {
+public class RecordsFavorite extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
