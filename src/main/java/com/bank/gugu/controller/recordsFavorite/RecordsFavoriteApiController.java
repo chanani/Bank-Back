@@ -2,6 +2,7 @@ package com.bank.gugu.controller.recordsFavorite;
 
 import com.bank.gugu.domain.recordsFavorite.service.RecordsFavoriteService;
 import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteCreateRequest;
+import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteUpdateRequest;
 import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +34,17 @@ public class RecordsFavoriteApiController {
     @DeleteMapping(value = "/api/v1/user/records-favorite/{recordsFavoriteId}")
     public ResponseEntity<ApiResponse> deleteRecordsFavorite(@PathVariable(name = "recordsFavoriteId") Long recordsFavoriteId) {
         recordsFavoriteService.deleteRecordsFavorite(recordsFavoriteId);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
+    @Operation(summary = "입/출금 내역 즐겨찾기 수정 API", description = "입/출금 내역 즐겨찾기를 수정합니다.")
+    @PutMapping(value = "/api/v1/user/records-favorite/{recordsFavoriteId}")
+    public ResponseEntity<ApiResponse> updateRecordsFavorite(
+            @PathVariable(name = "recordsFavoriteId")  Long recordsFavoriteId,
+            @Valid @RequestBody RecordsFavoriteUpdateRequest request,
+            @Parameter(hidden = true)User user
+    ) {
+        recordsFavoriteService.updateRecordsFavorite(recordsFavoriteId, request, user);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 }

@@ -4,6 +4,7 @@ import com.bank.gugu.domain.assets.repository.AssetsRepository;
 import com.bank.gugu.domain.category.repository.CategoryRepository;
 import com.bank.gugu.domain.recordsFavorite.repository.RecordsFavoriteRepository;
 import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteCreateRequest;
+import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteUpdateRequest;
 import com.bank.gugu.entity.assets.Assets;
 import com.bank.gugu.entity.category.Category;
 import com.bank.gugu.entity.common.constant.StatusType;
@@ -51,5 +52,26 @@ public class DefaultRecordsFavoriteService implements RecordsFavoriteService {
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_RECORDS_FAVORITE));
         // 소프트 삭제
         findRecordsFavorite.remove();
+    }
+
+    @Override
+    @Transactional
+    public void updateRecordsFavorite(Long recordsFavoriteId, RecordsFavoriteUpdateRequest request, User user) {
+        // 즐겨찾기 조회
+        RecordsFavorite findRecordsFavorite = recordsFavoriteRepository.findByIdAndStatus(recordsFavoriteId, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_RECORDS_FAVORITE));
+        // 카테고리 Entity 조회
+        Category findCategory = categoryRepository.findByIdAndStatus(request.categoryId(), StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+        // 자산 Entity 조회
+        Assets findAssets = null;
+        if(request.assetsId() != null){
+            findAssets = assetsRepository.findByIdAndStatus(request.assetsId(), StatusType.ACTIVE)
+                    .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_ASSETS));
+        }
+        // dto to Entity
+        RecordsFavorite newEntity = request.toEntity(user, findCategory, findAssets);
+        // update
+        findRecordsFavorite.update(newEntity);
     }
 }

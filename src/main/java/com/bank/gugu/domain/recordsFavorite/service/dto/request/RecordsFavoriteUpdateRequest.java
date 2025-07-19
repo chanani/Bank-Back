@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record RecordsFavoriteCreateRequest(
+public record RecordsFavoriteUpdateRequest(
         @Schema(description = "입/출금 타입", example = "DEPOSIT")
         @NotNull(message = "입/출급 타입은 필수입니다.")
         RecordType type,

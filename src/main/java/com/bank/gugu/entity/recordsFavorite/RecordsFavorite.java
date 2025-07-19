@@ -56,6 +56,25 @@ public class RecordsFavorite extends BaseEntity {
     @Column(name = "memo")
     private String memo;
 
-    @Column(name = "use_date")
-    private LocalDate useDate;
+    /**
+     * 즐겨찾기 정보 수정
+     */
+    public void update(RecordsFavorite newEntity) {
+        if (newEntity.memo != null) {
+            this.memo = newEntity.memo;
+        }
+        if (newEntity.price != null) {
+            this.price = newEntity.price;
+        }
+        if (newEntity.priceType != null) {
+            this.priceType = newEntity.priceType;
+        }
+        if (newEntity.category != null) {
+            this.category = newEntity.category;
+        }
+        if (newEntity.monthly != null) {
+            this.monthly = newEntity.monthly;
+        }
+        this.assets = newEntity.assets;
+    }
 }
