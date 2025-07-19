@@ -5,6 +5,7 @@ import com.bank.gugu.domain.category.repository.CategoryRepository;
 import com.bank.gugu.domain.recordsFavorite.repository.RecordsFavoriteRepository;
 import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteCreateRequest;
 import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteUpdateRequest;
+import com.bank.gugu.domain.recordsFavorite.service.dto.respnose.RecordsFavoriteResponse;
 import com.bank.gugu.domain.recordsFavorite.service.dto.respnose.RecordsFavoritesResponse;
 import com.bank.gugu.entity.assets.Assets;
 import com.bank.gugu.entity.category.Category;
@@ -85,5 +86,12 @@ public class DefaultRecordsFavoriteService implements RecordsFavoriteService {
                  .map(RecordsFavoritesResponse::new)
                  .toList();
 
+    }
+
+    @Override
+    public RecordsFavoriteResponse getRecordsFavorite(Long recordsFavoriteId) {
+        RecordsFavorite recordsFavorite = recordsFavoriteRepository.findByIdAndStatus(recordsFavoriteId, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_RECORDS_FAVORITE));
+        return new  RecordsFavoriteResponse(recordsFavorite);
     }
 }

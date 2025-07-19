@@ -3,6 +3,7 @@ package com.bank.gugu.controller.recordsFavorite;
 import com.bank.gugu.domain.recordsFavorite.service.RecordsFavoriteService;
 import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteCreateRequest;
 import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteUpdateRequest;
+import com.bank.gugu.domain.recordsFavorite.service.dto.respnose.RecordsFavoriteResponse;
 import com.bank.gugu.domain.recordsFavorite.service.dto.respnose.RecordsFavoritesResponse;
 import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.response.ApiResponse;
@@ -54,8 +55,15 @@ public class RecordsFavoriteApiController {
 
     @Operation(summary = "입/출금 내역 즐겨찾기 목록 조회 API", description = "입/출금 내역 즐겨찾기의 목록을 조회합니다.")
     @GetMapping(value = "/api/v1/user/records-favorite")
-    public ResponseEntity<DataResponse<List<RecordsFavoritesResponse>>> getRecordsFavorite(@Parameter(hidden = true) User user) {
+    public ResponseEntity<DataResponse<List<RecordsFavoritesResponse>>> getRecordsFavorites(@Parameter(hidden = true) User user) {
         List<RecordsFavoritesResponse> favorites = recordsFavoriteService.getRecordsFavorites(user);
+        return ResponseEntity.ok(DataResponse.send(favorites));
+    }
+
+    @Operation(summary = "입/출금 내역 즐겨찾기 상세조회 API", description = "입/출금 내역 즐겨찾기 내용을 상세조회합니다.")
+    @GetMapping(value = "/api/v1/user/records-favorite/{recordsFavoriteId}")
+    public ResponseEntity<DataResponse<RecordsFavoriteResponse>> getRecordsFavorite(@PathVariable(name = "recordsFavoriteId") Long recordsFavoriteId) {
+        RecordsFavoriteResponse favorites = recordsFavoriteService.getRecordsFavorite(recordsFavoriteId);
         return ResponseEntity.ok(DataResponse.send(favorites));
     }
 }

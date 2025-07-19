@@ -2,6 +2,7 @@ package com.bank.gugu.domain.recordsFavorite.service;
 
 import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteCreateRequest;
 import com.bank.gugu.domain.recordsFavorite.service.dto.request.RecordsFavoriteUpdateRequest;
+import com.bank.gugu.domain.recordsFavorite.service.dto.respnose.RecordsFavoriteResponse;
 import com.bank.gugu.domain.recordsFavorite.service.dto.respnose.RecordsFavoritesResponse;
 import com.bank.gugu.entity.user.User;
 
@@ -35,4 +36,11 @@ public interface RecordsFavoriteService {
      * @return 입/출금 내역 즐겨찾기 목록
      */
     List<RecordsFavoritesResponse> getRecordsFavorites(User user);
+
+    /**
+     * 입/출금 내역 즐겨찾기 상세조회
+     * @param recordsFavoriteId 입/출금 내역 즐겨찾기 식별자
+     * @return 입/출금 내역 즐겨찾기 상세 내용
+     */
+    RecordsFavoriteResponse getRecordsFavorite(Long recordsFavoriteId);
 }
