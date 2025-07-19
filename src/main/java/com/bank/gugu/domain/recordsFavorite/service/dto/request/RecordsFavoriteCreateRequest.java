@@ -1,19 +1,17 @@
-package com.bank.gugu.domain.record.service.dto.request;
+package com.bank.gugu.domain.recordsFavorite.service.dto.request;
 
 import com.bank.gugu.entity.assets.Assets;
-import com.bank.gugu.entity.assetsDetail.AssetsDetail;
 import com.bank.gugu.entity.category.Category;
-import com.bank.gugu.entity.common.constant.BooleanYn;
 import com.bank.gugu.entity.common.constant.PriceType;
 import com.bank.gugu.entity.common.constant.RecordType;
-import com.bank.gugu.entity.records.Records;
+import com.bank.gugu.entity.recordsFavorite.RecordsFavorite;
 import com.bank.gugu.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record RecordCreateRequest(
+public record RecordsFavoriteCreateRequest(
         @Schema(description = "입/출금 타입", example = "DEPOSIT")
         @NotNull(message = "입/출급 타입은 필수입니다.")
         RecordType type,
@@ -43,8 +41,8 @@ public record RecordCreateRequest(
         Long assetsId
 ) {
 
-    public Records toEntity(User user, Category category, Assets assets) {
-        return Records.builder()
+    public RecordsFavorite toEntity(User user, Category category, Assets assets) {
+        return RecordsFavorite.builder()
                 .user(user)
                 .category(category)
                 .assets(assets)
@@ -54,24 +52,6 @@ public record RecordCreateRequest(
                 .monthly(this.priceType.equals(PriceType.CARD) ? this.monthly : null)
                 .memo(this.memo)
                 .useDate(LocalDate.parse(this.useDate))
-                .build();
-    }
-
-    public AssetsDetail toAssetsDetail(User user, Assets assets, Records record, Category category) {
-        return AssetsDetail.builder()
-                .user(user)
-                .assets(assets)
-                .category(category)
-                .record(record)
-                .type(this.type)
-                .priceType(this.priceType)
-                .price(this.type.equals(RecordType.DEPOSIT) ? this.price : -this.price)
-                .balance(this.type.equals(RecordType.DEPOSIT) ?
-                        assets.getBalance() + price :
-                        assets.getBalance() - price)
-                .useDate(LocalDate.parse(this.useDate))
-                .active(BooleanYn.Y)
-                .memo(this.memo)
                 .build();
     }
 }
