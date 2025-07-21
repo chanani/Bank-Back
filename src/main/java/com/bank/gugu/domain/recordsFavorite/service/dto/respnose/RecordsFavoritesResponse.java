@@ -12,6 +12,9 @@ public class RecordsFavoritesResponse {
     @Schema(description = "입/출금 내역 ID")
     private Long id;
 
+    @Schema(description = "즐겨찾기명")
+    private String title;
+
     @Schema(description = "카테고리 아이콘")
     private String categoryIcon;
 
@@ -39,6 +42,7 @@ public class RecordsFavoritesResponse {
     public RecordsFavoritesResponse(RecordsFavorite recordsFavorite) {
         this.id = recordsFavorite.getId();
         this.categoryIcon = recordsFavorite.getCategory().getIcon().getPath();
+        this.title = recordsFavorite.getTitle();
         this.type = recordsFavorite.getType();
         this.price = recordsFavorite.getPrice();
         this.priceType = recordsFavorite.getPriceType();
