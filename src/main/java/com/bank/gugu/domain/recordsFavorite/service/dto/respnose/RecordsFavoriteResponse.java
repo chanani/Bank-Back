@@ -12,6 +12,9 @@ public class RecordsFavoriteResponse {
     @Schema(description = "입/출금 내역 ID")
     private Long id;
 
+    @Schema(description = "즐겨찾기명")
+    private String title;
+
     @Schema(description = "타입")
     private RecordType type;
 
@@ -34,6 +37,7 @@ public class RecordsFavoriteResponse {
     private Long categoryId;
 
     public RecordsFavoriteResponse(RecordsFavorite recordsFavorite) {
+        this.title = recordsFavorite.getTitle();
         this.id = recordsFavorite.getId();
         this.type = recordsFavorite.getType();
         this.price = recordsFavorite.getPrice();

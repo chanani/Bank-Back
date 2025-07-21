@@ -7,11 +7,17 @@ import com.bank.gugu.entity.common.constant.RecordType;
 import com.bank.gugu.entity.recordsFavorite.RecordsFavorite;
 import com.bank.gugu.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
 public record RecordsFavoriteUpdateRequest(
+
+        @Schema(description = "즐겨찾기명", example = "title")
+        @NotBlank(message = "즐겨찾기명은 필수입니다.")
+        String title,
+
         @Schema(description = "입/출금 타입", example = "DEPOSIT")
         @NotNull(message = "입/출급 타입은 필수입니다.")
         RecordType type,
@@ -43,6 +49,7 @@ public record RecordsFavoriteUpdateRequest(
                 .user(user)
                 .category(category)
                 .assets(assets)
+                .title(this.title)
                 .type(this.type)
                 .price(type.equals(RecordType.DEPOSIT) ? this.price : -this.price)
                 .priceType(this.priceType)

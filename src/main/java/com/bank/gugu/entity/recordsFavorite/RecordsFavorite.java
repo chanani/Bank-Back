@@ -39,6 +39,9 @@ public class RecordsFavorite extends BaseEntity {
     @JoinColumn(name = "assets_id")
     private Assets assets;
 
+    @Column(name = "title")
+    private String title;
+
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private RecordType type;
@@ -60,6 +63,9 @@ public class RecordsFavorite extends BaseEntity {
      * 즐겨찾기 정보 수정
      */
     public void update(RecordsFavorite newEntity) {
+        if(newEntity.title != null) {
+            this.title = newEntity.title;
+        }
         if (newEntity.memo != null) {
             this.memo = newEntity.memo;
         }
