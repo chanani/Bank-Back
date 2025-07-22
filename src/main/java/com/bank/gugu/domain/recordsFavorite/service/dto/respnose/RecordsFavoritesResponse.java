@@ -16,15 +16,19 @@ public class RecordsFavoritesResponse {
     @Schema(description = "카테고리 아이콘")
     private String categoryIcon;
 
+
     @Schema(description = "카테고리명")
     private String categoryName;
 
+    @Schema(description = "금액")
+    private Integer price;
 
 
     public RecordsFavoritesResponse(RecordsFavorite recordsFavorite) {
         this.id = recordsFavorite.getId();
+        this.title = recordsFavorite.getTitle();
         this.categoryIcon = recordsFavorite.getCategory().getIcon().getPath();
         this.categoryName = recordsFavorite.getCategory().getName();
-        this.title = recordsFavorite.getTitle();
+        this.price = recordsFavorite.getPrice();
     }
 }
