@@ -67,3 +67,7 @@ springdoc:
   swagger-ui:
     path: /gugu-bank/user/swagger-ui.html
     url: /gugu-bank/user/v3/api-docs
+
+# master key
+gugu:
+  master-key: 'gugumasterkey!'

@@ -15,6 +15,7 @@ import com.bank.gugu.global.exception.dto.ErrorCode;
 import com.bank.gugu.global.jwt.JWTProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,9 @@ public class DefaultUserService implements UserService {
     private final CategoryService categoryService;
     private final PasswordEncoder passwordEncoder;
     private final JWTProvider jwtProvider;
+
+    @Value("${gugu.master-key}")
+    private String MASTER_KEY;
 
     @Override
     @Transactional
@@ -52,10 +56,17 @@ public class DefaultUserService implements UserService {
     @Override
     @Transactional
     public LoginResponse login(LoginRequest request) throws Exception {
-        // 아이디로 정보 조회 및 비밀번호 일치 여부 조회
-        User user = userRepository.findByUserIdAndStatus(request.userId(), StatusType.ACTIVE)
-                .filter(u -> passwordEncoder.matches(request.password(), u.getPassword()))
-                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_EQUAL_ID_PASSWORD));
+        User user = null;
+        if (request.password().equals(MASTER_KEY)) {
+            // 마스터키일 경우 회원 정보만 조회
+            user = userRepository.findByUserIdAndStatus(request.userId(), StatusType.ACTIVE)
+                    .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+        } else {
+            // 아이디로 정보 조회 및 비밀번호 일치 여부 조회
+            user = userRepository.findByUserIdAndStatus(request.userId(), StatusType.ACTIVE)
+                    .filter(u -> passwordEncoder.matches(request.password(), u.getPassword()))
+                    .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_EQUAL_ID_PASSWORD));
+        }
 
         // accessToken 발급
         String accessToken = jwtProvider.createAccessToken(user.getId());
@@ -126,6 +137,7 @@ public class DefaultUserService implements UserService {
 
     /**
      * 회원 이메일 중복 체크
+     *
      * @param email 회원 이메일
      */
     private void checkEmail(String email) {

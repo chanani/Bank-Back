@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * EXCLUDE_PATHS의 경로는 doFilterInternal 제외
      */
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request)  {
         String path = request.getRequestURI();
         return Arrays.stream(EXCLUDE_PATHS).anyMatch(path::startsWith);
     }
