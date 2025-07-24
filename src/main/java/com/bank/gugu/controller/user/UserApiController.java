@@ -2,10 +2,7 @@ package com.bank.gugu.controller.user;
 
 import com.bank.gugu.domain.user.repository.UserRepository;
 import com.bank.gugu.domain.user.service.UserService;
-import com.bank.gugu.domain.user.service.dto.request.JoinRequest;
-import com.bank.gugu.domain.user.service.dto.request.LoginRequest;
-import com.bank.gugu.domain.user.service.dto.request.UserUpdateInfoRequest;
-import com.bank.gugu.domain.user.service.dto.request.UserUpdatePasswordRequest;
+import com.bank.gugu.domain.user.service.dto.request.*;
 import com.bank.gugu.domain.user.service.dto.response.LoginResponse;
 import com.bank.gugu.domain.user.service.dto.response.UserInfoResponse;
 import com.bank.gugu.entity.common.constant.StatusType;
@@ -99,10 +96,10 @@ public class UserApiController {
             description = "인증번호를 발송합니다.")
     @NoneAuth
     @PostMapping("/api/v1/none/email-send")
-    public ResponseEntity<ApiResponse> authEmailSend(@RequestParam(name = "email") String email) {
+    public ResponseEntity<ApiResponse> authEmailSend(@Valid @RequestBody FindAuthSendRequest request) {
 
         // 인증번호 발송 및 Redis에 인증번호 저장
-        userService.authEmailSend(email);
+        userService.authEmailSend(request.getEmail());
 
         return ResponseEntity.ok(ApiResponse.ok());
     }
