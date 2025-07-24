@@ -1,4 +1,4 @@
-package com.bank.gugu.global.util;
+package com.bank.gugu.global.utils;
 
 
 import java.util.UUID;

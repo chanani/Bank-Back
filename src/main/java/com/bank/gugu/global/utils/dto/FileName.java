@@ -1,4 +1,4 @@
-package com.bank.gugu.global.util.dto;
+package com.bank.gugu.global.utils.dto;
 
 import lombok.Getter;
 

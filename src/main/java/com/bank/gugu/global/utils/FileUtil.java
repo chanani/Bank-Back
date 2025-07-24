@@ -1,9 +1,9 @@
-package com.bank.gugu.global.util;
+package com.bank.gugu.global.utils;
 
 import com.bank.gugu.global.exception.OperationErrorException;
 import com.bank.gugu.global.exception.dto.ErrorCode;
-import com.bank.gugu.global.util.dto.CustomMultipartFile;
-import com.bank.gugu.global.util.dto.FileName;
+import com.bank.gugu.global.utils.dto.CustomMultipartFile;
+import com.bank.gugu.global.utils.dto.FileName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;

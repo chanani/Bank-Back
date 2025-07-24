@@ -82,6 +82,12 @@ dependencies {
     // file resize
     implementation 'net.coobird:thumbnailator:0.4.14'
 
+    // email
+    implementation 'javax.mail:mail:1.4.7'
+
+    // jodah : 시간 만료 라이브러리
+    implementation 'net.jodah:expiringmap:0.5.9'
+
 }
 
 tasks.named('test') {

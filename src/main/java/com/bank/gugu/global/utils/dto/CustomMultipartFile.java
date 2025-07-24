@@ -1,4 +1,4 @@
-package com.bank.gugu.global.util.dto;
+package com.bank.gugu.global.utils.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 

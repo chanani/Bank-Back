@@ -94,4 +94,30 @@ public class UserApiController {
         boolean checkEmail = userRepository.existsByEmailAndStatus(email, StatusType.ACTIVE);
         return ResponseEntity.ok(DataResponse.send(checkEmail));
     }
+
+    @Operation(summary = "인증번호 발송 API",
+            description = "인증번호를 발송합니다.")
+    @NoneAuth
+    @PostMapping("/api/v1/none/email-send")
+    public ResponseEntity<ApiResponse> authEmailSend(@RequestParam(name = "email") String email) {
+
+        // 인증번호 발송 및 Redis에 인증번호 저장
+        userService.authEmailSend(email);
+
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
+    @Operation(summary = "인증번호 확인 API",
+            description = "인증번호를 확인합니다.")
+    @NoneAuth
+    @GetMapping("/api/v1/none/email-check")
+    public ResponseEntity<ApiResponse> authEmailCheck(
+            @RequestParam(name = "email") String email,
+            @RequestParam(name = "authNumber") String authNumber) {
+
+        // 인증번호 일치 여부 확인
+        userService.authEmailCheck(email, authNumber);
+
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
 }

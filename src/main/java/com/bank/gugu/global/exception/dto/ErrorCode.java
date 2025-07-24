@@ -33,6 +33,9 @@ public enum ErrorCode {
     NOT_FOUND_SOCIAL_PHONE(1007, HttpStatus.BAD_REQUEST.value(), "계정에 연락처가 존재하지 않습니다."),
     USED_SOCIAL_ID(1008, HttpStatus.BAD_REQUEST.value(), "이미 사용 중인 계정입니다."),
     NOT_FOUND_SOCIAL_ID(1009, HttpStatus.BAD_REQUEST.value(), "존재하지 않은 계정입니다."),
+    CHECK_EMAIL(1010, HttpStatus.TOO_MANY_REQUESTS.value(), "요청 간격이 너무 짧습니다. 잠시 후 다시 시도해주세요."),
+    FAIL_EMAIL(1011, HttpStatus.INTERNAL_SERVER_ERROR.value(), "이메일 발송에 실패했습니다. 관리자에게 문의해주세요."),
+    NOT_EQUALS_AUTH_NUMBER(1012, HttpStatus.BAD_REQUEST.value(), "인증번호가 일치하지 않습니다."),
 
     // 1050 ~ 1099 토큰 관련 예외
     // UNAUTHORIZED:401(리프레시토큰요청필요할때) , FORBIDDEN:403(팅겨내야할때)
@@ -53,6 +56,7 @@ public enum ErrorCode {
     NOT_EQUAL_ID_PASSWORD(1101, HttpStatus.FORBIDDEN.value(), "아이디 또는 패스워드를 확인하세요."),
     EXISTS_USER_ID(1102, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 아아디입니다."),
     NOT_EQUAL_PASSWORD(1103, HttpStatus.BAD_REQUEST.value(), "두 비밀번호가 일치하지 않습니다."),
+    NOT_FOUND_EMAIL(1104, HttpStatus.BAD_REQUEST.value(), "잘못된 이메일입니다. 다시 확인해주세요."),
 
     // 1150 ~ 1199 아이콘 관련 예외
     NOT_FOUND_ICON(1150, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 아이콘입니다."),
@@ -68,11 +72,6 @@ public enum ErrorCode {
     NOT_FOUND_RECORDS(1300, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 입/출금 내역입니다."),
     NOT_FOUND_RECORDS_IMAGE(1301, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 이미지입니다."),
     NOT_FOUND_RECORDS_FAVORITE(1302, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 입/출금 내역 즐겨찾기입니다.");
-
-
-
-
-
 
 
     private final int code;

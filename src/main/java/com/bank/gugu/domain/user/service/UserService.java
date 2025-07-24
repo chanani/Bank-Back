@@ -47,7 +47,20 @@ public interface UserService {
      * 회원 정보 수정
      *
      * @param request 수정 요청 객체
-     * @param user    로그인 횡뤈 객체
+     * @param user    로그인 회원 객체
      */
     void updateUserInfo(UserUpdateInfoRequest request, User user);
+
+    /**
+     * 인증번호 발송
+     * @param email 발송 요청 이메일
+     */
+    void authEmailSend(String email);
+
+    /**
+     * 발송된 인증번호 일치 여부 확인
+     * @param email 발송 이메일
+     * @param authNumber 확인 인증번호
+     */
+    void authEmailCheck(String email, String authNumber);
 }

@@ -1,8 +1,6 @@
 package com.bank.gugu.domain.recordsImage.service;
 
 import com.bank.gugu.domain.record.repository.RecordsRepository;
-import com.bank.gugu.domain.record.service.dto.response.RecordsMonthResponse;
-import com.bank.gugu.domain.record.service.dto.response.RecordsResponse;
 import com.bank.gugu.domain.recordsImage.repository.RecordsImageRepository;
 import com.bank.gugu.domain.recordsImage.repository.condition.RecordImagesMonthCondition;
 import com.bank.gugu.domain.recordsImage.service.response.RecordsImagesMonthResponse;
@@ -14,8 +12,8 @@ import com.bank.gugu.entity.user.User;
 import com.bank.gugu.global.exception.OperationErrorException;
 import com.bank.gugu.global.exception.dto.ErrorCode;
 import com.bank.gugu.global.query.record.Range;
-import com.bank.gugu.global.util.FileUtil;
-import com.bank.gugu.global.util.dto.FileName;
+import com.bank.gugu.global.utils.FileUtil;
+import com.bank.gugu.global.utils.dto.FileName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service

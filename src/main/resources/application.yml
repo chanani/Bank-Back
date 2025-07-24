@@ -71,3 +71,5 @@ springdoc:
 # master key
 gugu:
   master-key: 'gugumasterkey!'
+  mail-id: 'ohohuniverse9@gmail.com'
+  mail-pw: 'agxkwgiqzprljlzo'
