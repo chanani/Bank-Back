@@ -1,6 +1,7 @@
 package com.bank.gugu.domain.user.service;
 
 import com.bank.gugu.domain.category.service.CategoryService;
+import com.bank.gugu.domain.user.service.constant.FindType;
 import com.bank.gugu.domain.user.service.dto.request.*;
 import com.bank.gugu.entity.common.constant.StatusType;
 import com.bank.gugu.domain.user.repository.UserRepository;
@@ -30,11 +31,10 @@ public class DefaultUserService implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JWTProvider jwtProvider;
     private final RedisProvider redisUtil;
-    private final MailSendUtil  mailSendUtil;
+    private final MailSendUtil mailSendUtil;
 
     @Value("${gugu.master-key}")
     private String MASTER_KEY;
-
 
 
     @Override
@@ -114,14 +114,22 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public void authEmailSend(String email) {
-        // 존재하는 이메일인지 체크
-        if(!userRepository.existsByEmailAndStatus(email, StatusType.ACTIVE)){
-            throw new OperationErrorException(ErrorCode.NOT_FOUND_EMAIL);
+    public void authEmailSend(FindAuthSendRequest request) {
+
+        if (request.type().equals(FindType.ID)) {
+            // 존재하는 이메일인지 체크
+            if (!userRepository.existsByEmailAndStatus(request.email(), StatusType.ACTIVE)) {
+                throw new OperationErrorException(ErrorCode.NOT_FOUND_EMAIL);
+            }
+        } else if (request.type().equals(FindType.PASSWORD)) {
+            // 존재하는 아이디, 이메일인지 체크
+            if (!userRepository.existsByUserIdAndEmailAndStatus(request.userId(), request.email(), StatusType.ACTIVE)) {
+                throw new OperationErrorException(ErrorCode.NOT_FOUND_USERID_EMAIL);
+            }
         }
 
         // 이메일 발송
-        mailSendUtil.sendEmail(email);
+        mailSendUtil.sendEmail(request.email());
     }
 
     @Override
@@ -138,7 +146,6 @@ public class DefaultUserService implements UserService {
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         return new FindUserIdRequest(findUser);
     }
-
 
 
     /**

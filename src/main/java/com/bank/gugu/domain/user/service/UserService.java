@@ -50,9 +50,9 @@ public interface UserService {
 
     /**
      * 인증번호 발송
-     * @param email 발송 요청 이메일
+     * @param request 발송 요청 객체
      */
-    void authEmailSend(String email);
+    void authEmailSend(FindAuthSendRequest request);
 
     /**
      * 발송된 인증번호 일치 여부 확인

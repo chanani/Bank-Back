@@ -57,6 +57,7 @@ public enum ErrorCode {
     EXISTS_USER_ID(1102, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 아아디입니다."),
     NOT_EQUAL_PASSWORD(1103, HttpStatus.BAD_REQUEST.value(), "두 비밀번호가 일치하지 않습니다."),
     NOT_FOUND_EMAIL(1104, HttpStatus.BAD_REQUEST.value(), "잘못된 이메일입니다. 다시 확인해주세요."),
+    NOT_FOUND_USERID_EMAIL(1105, HttpStatus.BAD_REQUEST.value(), "아아디 또는 이메일을 다시 확인해주세요."),
 
     // 1150 ~ 1199 아이콘 관련 예외
     NOT_FOUND_ICON(1150, HttpStatus.FORBIDDEN.value(), "찾을 수 없는 아이콘입니다."),

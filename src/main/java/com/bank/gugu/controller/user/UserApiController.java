@@ -99,7 +99,7 @@ public class UserApiController {
     public ResponseEntity<ApiResponse> authEmailSend(@Valid @RequestBody FindAuthSendRequest request) {
 
         // 인증번호 발송 및 Redis에 인증번호 저장
-        userService.authEmailSend(request.getEmail());
+        userService.authEmailSend(request);
 
         return ResponseEntity.ok(ApiResponse.ok());
     }
