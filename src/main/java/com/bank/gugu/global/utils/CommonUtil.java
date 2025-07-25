@@ -15,4 +15,5 @@ public class CommonUtil {
         return uuid.substring(0, 9).toLowerCase();
     }
 
+
 }

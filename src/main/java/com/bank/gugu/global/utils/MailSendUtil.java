@@ -1,6 +1,13 @@
 package com.bank.gugu.global.utils;
 
+import com.bank.gugu.global.exception.OperationErrorException;
+import com.bank.gugu.global.exception.dto.ErrorCode;
+import com.bank.gugu.global.redis.RedisProvider;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import net.jodah.expiringmap.ExpirationPolicy;
+import net.jodah.expiringmap.ExpiringMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -10,23 +17,26 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
 public class MailSendUtil {
 
     private final MailAuthUtil mailAuthUtil;
+    private final RedisProvider redisUtil;
 
+    @Setter
+    @Getter
     private String authNum;
-    public String getAuthNum() {
-        return authNum;
-    }
 
-    public void setAuthNum(String authNum) {
-        this.authNum = authNum;
-    }
+    // 각 이메일에 대한 마지막 요청 시간을 저장할 Map
+    Map<String, Long> lastRequestTimeMap = ExpiringMap.builder()
+            .maxSize(1000)
+            .expirationPolicy(ExpirationPolicy.CREATED)
+            .expiration(180, TimeUnit.SECONDS)
+            .build();
 
     public String welcomeMailSend(String emailInput, String authNum ) {
 
@@ -88,5 +98,81 @@ public class MailSendUtil {
             System.out.println("UnsupportedEncodingException : " + e.getMessage());
             return "인증번호 발송에 실패하였습니다.";
         }
+    }
+
+    /**
+     * 이메일 발송
+     * @param email 발송 요청 이메일
+     */
+    public void sendEmail(String email) {
+
+        // 이전 요청 시간 확인
+        checkSendTime(email);
+
+        // 임의 인증번호 생성
+        String authToken = createAuthToken();
+
+        // 이메일 발송
+        setAuthNum(authToken);
+        String mailResult = welcomeMailSend(email, getAuthNum());
+
+        // 실패했을 경우 예외 발생
+        if(!mailResult.equals("인증번호 발송에 성공하였습니다.")){
+            throw new OperationErrorException(ErrorCode.FAIL_EMAIL);
+        }
+
+        // 발송된 인증번호 redis에 저장
+        saveRedis(email, authToken);
+    }
+
+    /**
+     * 인증번호 생성
+     */
+    private static String createAuthToken() {
+        Random random = new Random();
+
+        List<String> list = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            list.add(String.valueOf(random.nextInt(10)));
+        }
+
+        for (int i = 0; i < 3; i++) {
+            list.add(String.valueOf((char) (random.nextInt(26) + 65)));
+        }
+
+        Collections.shuffle(list);
+        String authToken = "";
+        for (String item : list) authToken += item;
+        return authToken;
+    }
+
+    /**
+     * 인증번호 발송 내역 Reids에 등록 : 2분
+     * @param key 이메일 또는 연락처(key값)
+     * @param authNumber 인증번호
+     */
+    private void saveRedis(String key, String authNumber) {
+        redisUtil.setDataExpire(key, authNumber, 60 * 2L);
+    }
+
+    /**
+     * 인증번호 발송 시간 확인(중복 요청 방지)
+     * @param email 발송 요청 이메일
+     */
+    private void checkSendTime(String email) {
+        // 이전 요청 시간 확인
+        if (lastRequestTimeMap.containsKey(email)) {
+            long lastRequestTime = lastRequestTimeMap.get(email);
+            long currentTime = System.currentTimeMillis();
+
+            // 시간 간격 확인 (예: 1분)
+            if (currentTime - lastRequestTime < 60000) { // 1분 = 60000밀리초
+                throw new OperationErrorException(ErrorCode.CHECK_EMAIL);
+            }
+        }
+
+        // 새로운 요청의 시간을 저장
+        lastRequestTimeMap.put(email, System.currentTimeMillis());
     }
 }
