@@ -148,6 +148,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    @Transactional
     public void updateFindUserPassword(UserUpdateFindPasswordRequest request) {
         User findUser = userRepository.findByUserIdAndStatus(request.userId(), StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
