@@ -1,12 +1,9 @@
 package com.bank.gugu.domain.user.service;
 
 import com.bank.gugu.domain.category.service.CategoryService;
-import com.bank.gugu.domain.user.service.dto.request.UserUpdateInfoRequest;
+import com.bank.gugu.domain.user.service.dto.request.*;
 import com.bank.gugu.entity.common.constant.StatusType;
 import com.bank.gugu.domain.user.repository.UserRepository;
-import com.bank.gugu.domain.user.service.dto.request.JoinRequest;
-import com.bank.gugu.domain.user.service.dto.request.LoginRequest;
-import com.bank.gugu.domain.user.service.dto.request.UserUpdatePasswordRequest;
 import com.bank.gugu.domain.user.service.dto.response.LoginResponse;
 import com.bank.gugu.domain.user.service.dto.response.UserInfoResponse;
 import com.bank.gugu.entity.user.User;
@@ -144,6 +141,13 @@ public class DefaultUserService implements UserService {
         if (code == null || !code.equals(authNumber)) {
             throw new OperationErrorException(ErrorCode.NOT_EQUALS_AUTH_NUMBER);
         }
+    }
+
+    @Override
+    public FindUserIdRequest findUserId(String email) {
+        User findUser = userRepository.findByEmailAndStatus(email, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+        return new FindUserIdRequest(findUser);
     }
 
     /**

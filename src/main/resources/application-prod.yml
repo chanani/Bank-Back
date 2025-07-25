@@ -32,9 +32,9 @@ spring:
 
   data:
     redis:
-      host: redis-server
+      host: 172.17.0.5
       port: 6379
-      database: 0
+      database: 1
 
   mail:
     host: smtp.gmail.com

@@ -117,4 +117,20 @@ public class UserApiController {
 
         return ResponseEntity.ok(ApiResponse.ok());
     }
+
+    @Operation(summary = "회원 아이디를 조회합니다. API",
+            description = """
+                    이메일을 통해 회원 아이디를 조회합니다.
+                    아이디의 마지막 3글자는 '*'로 처리됩니다.
+                    """)
+    @NoneAuth
+    @GetMapping("/api/v1/none/find-id")
+    public ResponseEntity<DataResponse<FindUserIdRequest>> getUserId(
+            @RequestParam(name = "email") String email) {
+
+        // 회원 아이디 조회
+        FindUserIdRequest response = userService.findUserId(email);
+
+        return ResponseEntity.ok(DataResponse.send(response));
+    }
 }

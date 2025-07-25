@@ -1,9 +1,6 @@
 package com.bank.gugu.domain.user.service;
 
-import com.bank.gugu.domain.user.service.dto.request.JoinRequest;
-import com.bank.gugu.domain.user.service.dto.request.LoginRequest;
-import com.bank.gugu.domain.user.service.dto.request.UserUpdateInfoRequest;
-import com.bank.gugu.domain.user.service.dto.request.UserUpdatePasswordRequest;
+import com.bank.gugu.domain.user.service.dto.request.*;
 import com.bank.gugu.domain.user.service.dto.response.LoginResponse;
 import com.bank.gugu.domain.user.service.dto.response.UserInfoResponse;
 import com.bank.gugu.entity.user.User;
@@ -63,4 +60,11 @@ public interface UserService {
      * @param authNumber 확인 인증번호
      */
     void authEmailCheck(String email, String authNumber);
+
+    /**
+     * 회원 아이디 조회(이메일로 조회)
+     * @param email 조회 요청 이메일
+     * @return 마스킹된 회원 아이디
+     */
+    FindUserIdRequest findUserId(String email);
 }
