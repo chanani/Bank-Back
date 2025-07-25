@@ -10,6 +10,6 @@ public class FindUserIdRequest {
     private String userId;
 
     public FindUserIdRequest(User user) {
-        this.userId = user.getUserId();
+        this.userId = user.getUserId().substring(0, user.getUserId().length() - 3).concat("***");
     }
 }
