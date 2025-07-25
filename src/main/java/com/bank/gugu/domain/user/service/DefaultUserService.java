@@ -147,6 +147,17 @@ public class DefaultUserService implements UserService {
         return new FindUserIdRequest(findUser);
     }
 
+    @Override
+    public void updateFindUserPassword(UserUpdateFindPasswordRequest request) {
+        User findUser = userRepository.findByUserIdAndStatus(request.userId(), StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+        // 비밀번호 일치 여부 확인
+        equalPassword(request.password(), request.passwordCheck());
+
+        // 비밀번호 변경
+        findUser.updatePassword(request.password());
+    }
+
 
     /**
      * 회원 아이디 중복 체크(탈퇴한 아이디로 가입 불가)

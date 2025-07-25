@@ -133,4 +133,15 @@ public class UserApiController {
 
         return ResponseEntity.ok(DataResponse.send(response));
     }
+
+    @Operation(summary = "비밀번호 재등록 API",
+            description = "비밀번호를 재등록합니다.")
+    @NoneAuth
+    @PutMapping("/api/v1/user/update-find-password")
+    public ResponseEntity<ApiResponse> updateUserPassword(
+            @Valid @RequestBody UserUpdateFindPasswordRequest request
+    ) {
+        userService.updateFindUserPassword(request);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
 }

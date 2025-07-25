@@ -67,4 +67,10 @@ public interface UserService {
      * @return 마스킹된 회원 아이디
      */
     FindUserIdRequest findUserId(String email);
+
+    /**
+     * 회원 비밀번호 재설정(비밀번호 찾기 후)
+     * @param request 비밀번호 재설정 요청 객체
+     */
+    void updateFindUserPassword(UserUpdateFindPasswordRequest request);
 }
