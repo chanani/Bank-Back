@@ -137,7 +137,7 @@ public class UserApiController {
     @Operation(summary = "비밀번호 재등록 API",
             description = "비밀번호를 재등록합니다.")
     @NoneAuth
-    @PutMapping("/api/v1/user/update-find-password")
+    @PutMapping("/api/v1/none/update-find-password")
     public ResponseEntity<ApiResponse> updateUserPassword(
             @Valid @RequestBody UserUpdateFindPasswordRequest request
     ) {
