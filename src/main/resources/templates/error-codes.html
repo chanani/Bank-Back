@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>에러코드 목록</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>에러 상태</h1>
+
+    <h2>HTTP STATUS</h2>
+    <table style="margin-bottom: 20px">
+        <thead>
+            <tr>
+                <th bgcolor="#f5f5f5">HTTP STATUS</th>
+                <th bgcolor="#f5f5f5">이름</th>
+                <th bgcolor="#f5f5f5">설명</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="code : ${httpCodes}">
+            <td th:text="${code?.code}"></td>
+            <td th:text="${code?.name}"></td>
+            <td th:text="${code?.message}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>ERROR CODE</h2>
+    <table>
+        <thead>
+            <tr>
+                <th bgcolor="#f5f5f5">CODE</th>
+                <th bgcolor="#f5f5f5">코드명</th>
+                <th bgcolor="#f5f5f5">설명</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="code : ${errorCodes}">
+                <td th:text="${code?.code}"></td>
+                <td th:text="${code?.name}"></td>
+                <td th:text="${code?.message}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

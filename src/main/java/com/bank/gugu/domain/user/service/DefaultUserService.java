@@ -36,7 +36,6 @@ public class DefaultUserService implements UserService {
     @Value("${gugu.master-key}")
     private String MASTER_KEY;
 
-
     @Override
     @Transactional
     public void join(JoinRequest request) {
