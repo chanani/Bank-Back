@@ -32,6 +32,9 @@ public class User extends BaseEntity {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "last_visit")
+    private LocalDateTime lastVisit;
+
     /**
      * 비밀번호 변경
      */
@@ -46,6 +49,13 @@ public class User extends BaseEntity {
         if (user.email != null) {
             this.email = user.getEmail();
         }
+    }
+
+    /**
+     * 마지막 접속 기록 업데이트
+     */
+    public void updateLastVisit() {
+        this.lastVisit = LocalDateTime.now();
     }
 
 }

@@ -70,6 +70,9 @@ public class DefaultUserService implements UserService {
                     .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_EQUAL_ID_PASSWORD));
         }
 
+        // 접속일 기록
+        user.updateLastVisit();
+
         // accessToken 발급
         String accessToken = jwtProvider.createAccessToken(user.getId());
         // refreshToken 발급
