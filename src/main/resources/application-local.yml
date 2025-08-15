@@ -3,14 +3,14 @@ spring:
     name: saleUserBe
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/bank?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://49.142.78.32:3306/bank?serverTimezone=Asia/Seoul
     username: root
-    password: exmaple
+    password: chanhanhome
 
   jpa:
     hibernate:
       # create, create-drop 등 사용시 db가 초기화 될 수 있으므로 조심해야함
-      ddl-auto: none
+      ddl-auto: create
 
   data:
     redis:
