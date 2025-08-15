@@ -10,11 +10,6 @@ spring:
   profiles:
     default: local
 
-  # security
-  security:
-    user:
-      name: user
-      password: asdf1234!@#
 
   # multipart/form-data
   servlet:
@@ -22,6 +17,13 @@ spring:
       enabled: true
       max-file-size: 50MB
       max-request-size: 100MB
+
+  hikari:
+    connection-timeout: 60000
+    maximum-pool-size: 12
+    minimum-idle: 5
+    idle-timeout: 300000
+    max-lifetime: 6000000
 
   jpa:
     properties:
@@ -53,8 +55,8 @@ logging:
 jwt:
   secret-key: sale-2025-delivery+1004kksale-2025-delivery+1004kksale-2025-delivery+1014kk
   issuer-uri: www.gugu-back.kr
-  accessToken-expired-time: 360000000
-  refreshToken-expired-time: 864000000
+  accessToken-expired-time: 36000000
+  refreshToken-expired-time: 86400000
 
 # file path
 file:
@@ -68,8 +70,3 @@ springdoc:
     path: /gugu-bank/user/swagger-ui.html
     url: /gugu-bank/user/v3/api-docs
 
-# master key
-gugu:
-  master-key: 'gugumasterkey!'
-  mail-id: 'ohohuniverse9@gmail.com'
-  mail-pw: 'agxkwgiqzprljlzo'

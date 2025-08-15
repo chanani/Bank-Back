@@ -13,18 +13,6 @@ spring:
     username: root
     password: chanhanhome
 
-  # security
-  security:
-    user:
-      name: user
-      password: asdf1234!@
-  hikari:
-    connection-timeout: 60000
-    maximum-pool-size: 12
-    minimum-idle: 5
-    idle-timeout: 300000
-    max-lifetime: 6000000
-
   jpa:
     hibernate:
       # create, create-drop 등 사용시 db가 초기화 될 수 있으므로 조심해야함
@@ -54,3 +42,8 @@ spring:
 file:
   path: /bank-image/
 
+# master key
+gugu:
+  master-key: 'gugumasterkey!'
+  mail-id: 'ohohuniverse9@gmail.com'
+  mail-pw: 'agxkwgiqzprljlzo'

@@ -60,7 +60,7 @@ public class JWTProvider {
     public String createRefreshToken(Long userId) throws Exception {
         return Jwts.builder()
                 .claim("userId", userId)
-                .claim("roles", Arrays.asList("ROLE_USER"))
+                .claim("roles", List.of("ROLE_USER"))
                 .subject("AUTH")
                 .issuer(issuerUri)
                 .issuedAt(new Date(System.currentTimeMillis()))

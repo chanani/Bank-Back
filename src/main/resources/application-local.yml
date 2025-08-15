@@ -3,21 +3,9 @@ spring:
     name: saleUserBe
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://49.142.78.32:3306/bank?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/bank?serverTimezone=Asia/Seoul
     username: root
-    password: chanhanhome
-
-  # security
-  security:
-    user:
-      name: user
-      password: asdf1234!@
-  hikari:
-    connection-timeout: 60000
-    maximum-pool-size: 12
-    minimum-idle: 5
-    idle-timeout: 300000
-    max-lifetime: 6000000
+    password: exmaple
 
   jpa:
     hibernate:
@@ -30,19 +18,12 @@ spring:
       port: 6379
       database: 0
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: mink240000@gmail.com
-    password: wsqerlrvbcoqtujf
-    properties:
-      mail:
-        smtp:
-          auth: true
-          timeout: 5000
-          starttls:
-            enable: true
-
 # file path
 file:
   path: /Users/ichanhan/Desktop/uploads/
+
+# master key
+gugu:
+  master-key: key
+  mail-id: example
+  mail-pw: example

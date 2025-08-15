@@ -3,3 +3,6 @@
 build/
 target/
 logs/
+
+src/main/resources/application-dev.yml
+src/main/resources/application-prod.yml

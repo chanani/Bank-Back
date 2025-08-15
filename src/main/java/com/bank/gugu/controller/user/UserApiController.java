@@ -93,12 +93,15 @@ public class UserApiController {
     }
 
     @Operation(summary = "인증번호 발송 API",
-            description = "인증번호를 발송합니다.")
+            description = """
+                    아이디 또는 비밀번호 찾기 시 이메일을 발송합니다.
+                    type : { ID : '아이디 찾기', PASSWORD : '비밀번호 찾기'}
+                    비밀번호 찾기일 경우 userId를 같이 전달해주세요.
+                    """)
     @NoneAuth
     @PostMapping("/api/v1/none/email-send")
     public ResponseEntity<ApiResponse> authEmailSend(@Valid @RequestBody FindAuthSendRequest request) {
 
-        // 인증번호 발송 및 Redis에 인증번호 저장
         userService.authEmailSend(request);
 
         return ResponseEntity.ok(ApiResponse.ok());

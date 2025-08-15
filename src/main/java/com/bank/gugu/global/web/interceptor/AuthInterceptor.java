@@ -71,8 +71,7 @@ public class AuthInterceptor implements HandlerInterceptor {
                 .toList();
 
         if (roleList.contains(UserType.USER.getRole())) {
-            // 회원일 경우
-            // 회원 정보 반환
+            // 회원일 경우 회원 정보 반환
             User user = jwtProvider.getUserInfo(userDetails.getId());
             request.setAttribute("loginUser", user);
         }

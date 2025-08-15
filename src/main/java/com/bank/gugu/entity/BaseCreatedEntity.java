@@ -25,7 +25,7 @@ public class BaseCreatedEntity {
     @Column(name = "created_by")
     private Long createdBy;
 
-    @ColumnDefault("ACTICE")
+    @ColumnDefault("ACTIVE")
     private StatusType status;
 
     /**

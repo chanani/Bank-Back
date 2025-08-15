@@ -50,7 +50,6 @@ public class DefaultUserService implements UserService {
         // 회원가입
         User user = userRepository.save(newUser);
         log.info("join success ! user id = {}", user.getUserId());
-
         // 기본 카테고리 생성
         categoryService.addCategories(user);
     }
@@ -194,7 +193,7 @@ public class DefaultUserService implements UserService {
      */
     private void checkEmail(String email) {
         if (userRepository.existsByEmailAndStatus(email, StatusType.ACTIVE)) {
-            throw new OperationErrorException(ErrorCode.EXISTS_USER_ID);
+            throw new OperationErrorException(ErrorCode.NOT_FOUND_EMAIL);
         }
     }
 
