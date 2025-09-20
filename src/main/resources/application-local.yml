@@ -2,15 +2,24 @@ spring:
   application:
     name: saleUserBe
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://49.142.78.32:3306/bank?serverTimezone=Asia/Seoul
-    username: root
-    password: chanhanhome
+    master:
+      hikari:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/bank?serverTimezone=Asia/Seoul
+        read-only: false
+        username: root
+        password: password
+    slave:
+      hikari:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3307/bank?serverTimezone=Asia/Seoul
+        read-only: true
+        username: root
+        password: password
 
   jpa:
     hibernate:
-      # create, create-drop 등 사용시 db가 초기화 될 수 있으므로 조심해야함
-      ddl-auto: create
+      ddl-auto: none
 
   data:
     redis:
