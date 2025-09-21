@@ -1,0 +1,44 @@
+server:
+  ssl:
+    enabled: true
+    key-store: file:/cert/keystore.p12
+    key-store-type: PKCS12
+    key-store-password: ${SSL_PASSWORD}
+spring:
+  application:
+    name: gugubank
+  datasource:
+    master:
+      hikari:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: ${MASTER_DB_URL}
+        read-only: false
+        username: ${MASTER_DB_USERNAME}
+        password: ${MASTER_DB_PASSWORD}
+    slave:
+      hikari:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: ${SLAVE_DB_URL}
+        read-only: true
+        username: ${SLAVE_DB_USERNAME}
+        password: ${SLAVE_DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  data:
+    redis:
+      host: ${REDIS_POST}
+      port: ${REDIS_PORT}
+      database: 1
+
+# file path
+file:
+  path: ${FILE_PATH}
+
+# master key
+gugu:
+  master-key: ${MASTER_KEY}
+  mail-id: ${MAIL_ID}
+  mail-pw: ${MAIL_PASSWORD}
