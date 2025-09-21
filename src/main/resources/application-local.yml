@@ -5,17 +5,17 @@ spring:
     master:
       hikari:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        jdbc-url: jdbc:mysql://49.142.78.32:3306/bank?serverTimezone=Asia/Seoul
+        jdbc-url: jdbc:mysql://localhost:3306/bank?serverTimezone=Asia/Seoul
         read-only: false
         username: root
-        password: chanhanhome
+        password: password
     slave:
       hikari:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        jdbc-url: jdbc:mysql://49.142.78.32:3307/bank?serverTimezone=Asia/Seoul
+        jdbc-url: jdbc:mysql://localhost:3307/bank?serverTimezone=Asia/Seoul
         read-only: true
         username: root
-        password: chanhanhome
+        password: password
 
   jpa:
     hibernate:
