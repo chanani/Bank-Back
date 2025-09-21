@@ -29,7 +29,7 @@ spring:
 
   data:
     redis:
-      host: ${REDIS_POST}
+      host: ${REDIS_HOST}
       port: ${REDIS_PORT}
       database: 1
 
