@@ -32,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -224,6 +225,12 @@ public class DefaultRecordsService implements RecordsService {
 
     @Override
     public List<RecordsCurrentResponse> getCurrentRecord(LocalDate currentDate, User user) {
+        // 트랜잭션 상태 확인
+        System.out.println("=== 트랜잭션 상태(2) ===");
+        System.out.println("Active: " + TransactionSynchronizationManager.isActualTransactionActive());
+        System.out.println("ReadOnly: " + TransactionSynchronizationManager.isCurrentTransactionReadOnly());
+        System.out.println("===================");
+
         // create condition
         RecordCurrentCondition condition = new RecordCurrentCondition(currentDate, user);
         return recordsRepository.findCurrentQuery(condition);
@@ -276,6 +283,7 @@ public class DefaultRecordsService implements RecordsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public RecordsCalendarResponse getCalendarRecord(String yearMonth, User user) {
         // 해당 월의 첫 번째 날과 마지막 날 계산
         LocalDate startDate = LocalDate.parse(yearMonth.concat("-01"));

@@ -13,7 +13,16 @@ public class RoutingDataSource extends AbstractRoutingDataSource {
 
     @Override
     protected Object determineCurrentLookupKey() {
-        return TransactionSynchronizationManager.isCurrentTransactionReadOnly()
-                ? DataSourceType.SLAVE : DataSourceType.MASTER;
+        boolean isReadOnly = TransactionContextHolder.isReadOnly();
+        DataSourceType dataSourceType = isReadOnly ? DataSourceType.SLAVE : DataSourceType.MASTER;
+
+        System.out.println("=== 라우팅 결정 (ThreadLocal) ===");
+        System.out.println("ReadOnly from ThreadLocal: " + isReadOnly);
+        System.out.println("Selected: " + dataSourceType);
+        System.out.println("==============================");
+
+        return dataSourceType;
+       /* return TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                ? DataSourceType.SLAVE : DataSourceType.MASTER;*/
     }
 }

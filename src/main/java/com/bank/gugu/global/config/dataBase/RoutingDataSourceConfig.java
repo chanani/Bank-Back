@@ -10,6 +10,7 @@ import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -108,6 +109,7 @@ public class RoutingDataSourceConfig {
         HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
         hibernateJpaVendorAdapter.setGenerateDdl(false);
         hibernateJpaVendorAdapter.setShowSql(false);
+        hibernateJpaVendorAdapter.setDatabase(Database.MYSQL);
         hibernateJpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.MySQLDialect");
         return hibernateJpaVendorAdapter;
     }
@@ -119,7 +121,7 @@ public class RoutingDataSourceConfig {
      * @return {@link PlatformTransactionManager} 타입의 JpaTransactionManager Bean
      */
     @Bean(TRANSACTION_MANAGER)
-    public PlatformTransactionManager platformTransactionManager(
+    public PlatformTransactionManager transactionManager(
             @Qualifier("entityManagerFactory") LocalContainerEntityManagerFactoryBean entityManagerFactory
     ) {
         JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
