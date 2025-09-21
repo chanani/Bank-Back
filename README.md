@@ -63,8 +63,19 @@ src/main/java/com/template/
 ```yaml
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/schema-name?serverTimezone=Asia/Seoul
-    username: your-username
-    password: your-password
+  master:
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/bank?serverTimezone=Asia/Seoul
+      read-only: false
+      username: root
+      password: password
+  slave:
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/bank?serverTimezone=Asia/Seoul
+      read-only: true
+      username: root
+      password: password
+
 ```
