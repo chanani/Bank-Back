@@ -5,3 +5,4 @@ target/
 logs/
 
 src/main/resources/application-dev.yml
+src/main/resources/application-chan.yml
