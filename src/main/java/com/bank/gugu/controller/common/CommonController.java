@@ -5,6 +5,7 @@ import com.bank.gugu.global.annotation.NoneAuth;
 import com.bank.gugu.global.exception.dto.ErrorCode;
 import com.bank.gugu.global.exception.dto.ErrorCodeData;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,5 +39,9 @@ public class CommonController {
         return "error-codes";
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
 
 }
