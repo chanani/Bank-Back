@@ -38,5 +38,10 @@ public class CommonController {
         return "error-codes";
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
+
 
 }
