@@ -14,15 +14,88 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: AI Code Review
-        uses: coderabbitai/ai-pr-reviewer@latest
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install anthropic PyGithub
+
+      - name: Run AI Review
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        with:
-          anthropic_model: "claude-sonnet-4-5-20250929"
-          review_comment_lgtm: false
-          config_path: ".github/ai-review-config.yml"  # 이 줄 추가!
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO_NAME: ${{ github.repository }}
+        run: |
+          python - <<'EOF'
+          import os
+          import anthropic
+          from github import Github
+
+          g = Github(os.environ['GITHUB_TOKEN'])
+          repo = g.get_repo(os.environ['REPO_NAME'])
+          pr = repo.get_pull(int(os.environ['PR_NUMBER']))
+
+          changed_files = []
+          for file in pr.get_files():
+              if file.filename.endswith(('.java', '.kt', '.xml', '.gradle')):
+                  changed_files.append({
+                      'filename': file.filename,
+                      'patch': file.patch or '',
+                      'status': file.status
+                  })
+
+          if not changed_files:
+              print("리뷰할 파일이 없습니다.")
+              exit(0)
+
+          changes_text = ""
+          for file_info in changed_files:
+              changes_text += f"\n파일: {file_info['filename']} ({file_info['status']})\n"
+              changes_text += f"{file_info['patch']}\n"
+              changes_text += "-" * 80 + "\n"
+
+          client = anthropic.Anthropic(api_key=os.environ['ANTHROPIC_API_KEY'])
+          
+          system_prompt = """경험 많은 시니어 개발자로서 코드 리뷰를 수행해줘.
+
+          리뷰 지침:
+          1. 가장 중요한 문제점이나 개선사항에만 집중해.
+          2. 전체 변경사항에 대한 통합된 리뷰를 제공해.
+          3. 구체적인 개선 제안을 제시해.
+          4. 사소한 스타일 문제는 무시해.
+          5. 심각한 버그, 성능 문제, 보안 취약점만 언급해.
+          6. 이미 개선된 사항은 긍정적으로 언급해.
+
+          리뷰 형식:
+          - 개선된 사항: [긍정적 언급]
+          - 주요 이슈: [문제점과 개선 방안]
+          - 전반적인 의견: [요약]
+
+          Spring Boot와 Java 코드를 중점적으로 리뷰해줘."""
+
+          try:
+              message = client.messages.create(
+                  model="claude-sonnet-4-5-20250929",
+                  max_tokens=2000,
+                  system=system_prompt,
+                  messages=[{
+                      "role": "user",
+                      "content": f"다음 변경사항을 리뷰해줘:\n\n{changes_text}"
+                  }]
+              )
+
+              review_text = message.content[0].text
+              pr.create_issue_comment(f"## 🤖 Claude AI 코드 리뷰\n\n{review_text}")
+              print("리뷰 완료!")
+          
+          except Exception as e:
+              print(f"에러 발생: {str(e)}")
+              pr.create_issue_comment(f"## ⚠️ AI 리뷰 실패\n\n에러: {str(e)}")
+              raise
+
+          EOF
