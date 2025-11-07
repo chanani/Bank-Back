@@ -30,7 +30,6 @@ import java.util.List;
 @Component
 public class JWTProvider {
 
-    private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
 
     @Value("${jwt.secret-key}")

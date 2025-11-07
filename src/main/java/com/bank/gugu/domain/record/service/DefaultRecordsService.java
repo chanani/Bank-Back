@@ -12,7 +12,6 @@ import com.bank.gugu.domain.record.service.dto.request.RecordUpdateMemoRequest;
 import com.bank.gugu.domain.record.service.dto.request.RecordUpdateRequest;
 import com.bank.gugu.domain.record.service.dto.response.*;
 import com.bank.gugu.domain.recordsImage.repository.RecordsImageRepository;
-import com.bank.gugu.domain.user.repository.UserRepository;
 import com.bank.gugu.entity.BaseEntity;
 import com.bank.gugu.entity.assets.Assets;
 import com.bank.gugu.entity.assetsDetail.AssetsDetail;
@@ -32,7 +31,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -49,7 +47,6 @@ import java.util.stream.Collectors;
 public class DefaultRecordsService implements RecordsService {
 
     private final RecordsRepository recordsRepository;
-    private final UserRepository userRepository;
     private final AssetsRepository assetsRepository;
     private final CategoryRepository categoryRepository;
     private final AssetsDetailRepository assetsDetailRepository;
@@ -59,58 +56,22 @@ public class DefaultRecordsService implements RecordsService {
     @Override
     @Transactional
     public void addRecord(RecordCreateRequest request, User user, List<MultipartFile> inputFiles) throws IOException {
-        // 카테고리 조회
-        Category findCategory = categoryRepository.findByIdAndStatus(request.categoryId(), StatusType.ACTIVE)
-                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
-        // assets entity 조회
+        Category findCategory = findCategory(request.categoryId());
+
         Assets findAssets = null;
-        if (request.assetsId() != null && request.assetsId() > 0) {
-            findAssets = assetsRepository.findByIdAndStatus(request.assetsId(), StatusType.ACTIVE)
-                    .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_ASSETS));
-        }
-        // dto -> entity
+        findAssets = findAssets(request.assetsId(), findAssets);
         Records newEntity = request.toEntity(user, findCategory, findAssets);
-        // 등록
         Records saveRecord = recordsRepository.save(newEntity);
 
-        // 자산 그룹을 지정했을 경우 자산 상세 내용 등록
-        if (request.assetsId() != null && request.assetsId() > 0) {
-            // dto -> assets Entity
+        if (isBlackAssets(request)) {
             AssetsDetail newAssetsDetailEntity = request.toAssetsDetail(user, findAssets, saveRecord, findCategory);
-            // 등록
             assetsDetailRepository.save(newAssetsDetailEntity);
-            // 자산 그룹 합계 금액 업데이트
             findAssets.updateBalance(newAssetsDetailEntity);
         }
 
-
-        if (inputFiles != null && !inputFiles.isEmpty()) {
-            // 리사이징된 파일들을 저장할 리스트
-            List<MultipartFile> resizedFiles = new ArrayList<>();
-
-            // 확장자 체크(png, jpg, jpeg)
-            for (MultipartFile inputFile : inputFiles) {
-                fileUtil.existsImageFileExtension(inputFile);
-
-                // File size Resizing
-                MultipartFile resizedFile = fileUtil.resizeImage(inputFile);
-                resizedFiles.add(resizedFile);
-            }
-
-            // 서버에 이미지 업로드
-            List<FileName> fileNames = fileUtil.filesUpload(resizedFiles, "fileImage");
-            List<RecordsImage> recordsImages = new ArrayList<>();
-            // recordsImage 테이블에 등록
-            for (FileName fileName : fileNames) {
-                RecordsImage recordsImage = RecordsImage.builder()
-                        .user(user)
-                        .records(saveRecord)
-                        .path(fileName.getModifiedFileName())
-                        .build();
-                recordsImages.add(recordsImage);
-            }
-
-            // 등록
+        if (isBlankFile(inputFiles)) {
+            List<MultipartFile> resizedFiles = resizingFile(inputFiles);
+            List<RecordsImage> recordsImages = uploadImageFile(user, resizedFiles, saveRecord);
             recordsImageRepository.saveAll(recordsImages);
         }
     }
@@ -225,13 +186,6 @@ public class DefaultRecordsService implements RecordsService {
 
     @Override
     public List<RecordsCurrentResponse> getCurrentRecord(LocalDate currentDate, User user) {
-        // 트랜잭션 상태 확인
-        System.out.println("=== 트랜잭션 상태(2) ===");
-        System.out.println("Active: " + TransactionSynchronizationManager.isActualTransactionActive());
-        System.out.println("ReadOnly: " + TransactionSynchronizationManager.isCurrentTransactionReadOnly());
-        System.out.println("===================");
-
-        // create condition
         RecordCurrentCondition condition = new RecordCurrentCondition(currentDate, user);
         return recordsRepository.findCurrentQuery(condition);
     }
@@ -297,5 +251,59 @@ public class DefaultRecordsService implements RecordsService {
         int totalDeposit = records.stream().mapToInt(RecordsCalendarDetail::getDayDeposit).sum();
         int totalWithDraw = records.stream().mapToInt(RecordsCalendarDetail::getDayWithdraw).sum();
         return new RecordsCalendarResponse(totalDeposit, totalWithDraw, (totalWithDraw + totalDeposit), records);
+    }
+
+    private Category findCategory(Long request) {
+        return categoryRepository.findByIdAndStatus(request, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+    }
+
+    private Assets findAssets(Long request, Assets findAssets) {
+        if (isBlank(request)) {
+            findAssets = assetsRepository.findByIdAndStatus(request, StatusType.ACTIVE)
+                    .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_ASSETS));
+        }
+        return findAssets;
+    }
+
+    private static boolean isBlank(Long request) {
+        return request != null && request > 0;
+    }
+
+    private static boolean isBlackAssets(RecordCreateRequest request) {
+        return request.assetsId() != null && request.assetsId() > 0;
+    }
+
+    private static boolean isBlankFile(List<MultipartFile> inputFiles) {
+        return inputFiles != null && !inputFiles.isEmpty();
+    }
+
+    private List<MultipartFile> resizingFile(List<MultipartFile> inputFiles) throws IOException {
+        List<MultipartFile> resizedFiles = new ArrayList<>();
+        for (MultipartFile inputFile : inputFiles) {
+            fileUtil.existsImageFileExtension(inputFile);
+            MultipartFile resizedFile = fileUtil.resizeImage(inputFile);
+            resizedFiles.add(resizedFile);
+        }
+        return resizedFiles;
+    }
+
+    private List<RecordsImage> uploadImageFile(User user, List<MultipartFile> resizedFiles, Records saveRecord) {
+        List<FileName> fileNames = fileUtil.filesUpload(resizedFiles, "fileImage");
+
+        List<RecordsImage> recordsImages = new ArrayList<>();
+        for (FileName fileName : fileNames) {
+            RecordsImage recordsImage = addRecordImage(user, saveRecord, fileName);
+            recordsImages.add(recordsImage);
+        }
+        return recordsImages;
+    }
+
+    private static RecordsImage addRecordImage(User user, Records saveRecord, FileName fileName) {
+        return RecordsImage.builder()
+                .user(user)
+                .records(saveRecord)
+                .path(fileName.getModifiedFileName())
+                .build();
     }
 }
