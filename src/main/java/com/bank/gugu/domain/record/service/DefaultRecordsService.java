@@ -97,92 +97,37 @@ public class DefaultRecordsService implements RecordsService {
     @Override
     @Transactional
     public void updateRecord(RecordUpdateRequest request, Long recordsId, List<MultipartFile> inputFiles, User user) throws IOException {
-        // 카테고리 조회
-        Category findCategory = categoryRepository.findByIdAndStatus(request.categoryId(), StatusType.ACTIVE)
-                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+        Category findCategory = findCategory(request.categoryId());
 
-        // assets entity 조회
         Assets findAssets = null;
-        if (request.assetsId() != null && request.assetsId() > 0) {
-            findAssets = assetsRepository.findByIdAndStatus(request.assetsId(), StatusType.ACTIVE)
-                    .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_ASSETS));
-        }
+        findAssets = findAssets(request.assetsId(), findAssets);
 
-        // dto -> entity
         Records newEntity = request.toEntity(findCategory, findAssets);
 
-        // record Entity 조회
-        Records findRecord = recordsRepository.findByIdAndStatus(recordsId, StatusType.ACTIVE)
-                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_RECORDS));
+        Records findRecord = findRecord(recordsId);
 
         // 자산 내역 수정
         if (findRecord.getAssets() != null) {
-            assetsRepository.findByIdAndStatus(findRecord.getAssets().getId(), StatusType.ACTIVE)
-                    .ifPresent(assets -> assets.updateRecordBalance(findRecord, newEntity));
-            assetsDetailRepository.findByRecordIdAndStatus(findRecord.getId(), StatusType.ACTIVE)
-                    .ifPresent(assetsDetail -> assetsDetail.updateRecordPrice(newEntity));
+            modifyAssets(findRecord, newEntity);
         } else if (request.assetsId() != null && request.assetsId() > 0) {
-            // dto -> assets Entity
-            AssetsDetail newAssetDetail = AssetsDetail.builder()
-                    .user(user)
-                    .assets(findAssets)
-                    .priceType(request.priceType())
-                    .category(findCategory)
-                    .record(findRecord)
-                    .type(request.type())
-                    .price(request.type().equals(RecordType.DEPOSIT) ? request.price() : -request.price())
-                    .active(BooleanYn.Y)
-                    .useDate(LocalDate.parse(request.useDate()))
-                    .memo(request.memo())
-                    .balance(request.type().equals(RecordType.DEPOSIT) ?
-                            findAssets.getBalance() + request.price() :
-                            findAssets.getBalance() - request.price())
-                    .build();
-            // 등록
+            AssetsDetail newAssetDetail = createAssetsDetail(request, user, findAssets, findCategory, findRecord);
             assetsDetailRepository.save(newAssetDetail);
-            // 자산 그룹 합계 금액 업데이트
             findAssets.updateBalance(newAssetDetail);
         }
 
-        // 수정
         findRecord.update(newEntity);
 
-        // 삭제할 이미지 있을 경우 데이터 삭제
-        List<Long> deleteIds = request.deleteImages();
-        if (request.deleteImages() != null && !request.deleteImages().isEmpty()) {
-            List<RecordsImage> findRecordImages = recordsImageRepository.findByIdInAndStatus(deleteIds, StatusType.ACTIVE);
-            for (RecordsImage findRecordImage : findRecordImages) {
-                findRecordImage.remove();
-            }
-        }
+        removeImageFile(request);
 
-        // 업로드할 이미지 있을 경우 이미지 업로드
-        if (inputFiles != null && !inputFiles.isEmpty()) {
-            List<MultipartFile> resizedFiles = new ArrayList<>();
-            // 확장자 체크(png, jpg, jpeg)
-            for (MultipartFile inputFile : inputFiles) {
-                fileUtil.existsImageFileExtension(inputFile);
-                // File size Resizing
-                MultipartFile resizedFile = fileUtil.resizeImage(inputFile);
-                resizedFiles.add(resizedFile);
-            }
-            // 서버에 이미지 업로드
-            List<FileName> fileNames = fileUtil.filesUpload(resizedFiles, "fileImage");
-            List<RecordsImage> recordsImages = new ArrayList<>();
-            // recordsImage 테이블에 등록
-            for (FileName fileName : fileNames) {
-                RecordsImage recordsImage = RecordsImage.builder()
-                        .user(user)
-                        .records(findRecord)
-                        .path(fileName.getModifiedFileName())
-                        .build();
-                recordsImages.add(recordsImage);
-            }
-
-            // 등록
+        if (isBlankFile(inputFiles)) {
+            List<MultipartFile> resizedFiles = resizingFile(inputFiles);
+            List<RecordsImage> recordsImages = uploadImageFile(user, resizedFiles, findRecord);
             recordsImageRepository.saveAll(recordsImages);
         }
     }
+
+
+
 
     @Override
     public List<RecordsCurrentResponse> getCurrentRecord(LocalDate currentDate, User user) {
@@ -266,6 +211,11 @@ public class DefaultRecordsService implements RecordsService {
         return findAssets;
     }
 
+    private Records findRecord(Long recordsId) {
+        return recordsRepository.findByIdAndStatus(recordsId, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_RECORDS));
+    }
+
     private static boolean isBlank(Long request) {
         return request != null && request > 0;
     }
@@ -304,6 +254,45 @@ public class DefaultRecordsService implements RecordsService {
                 .user(user)
                 .records(saveRecord)
                 .path(fileName.getModifiedFileName())
+                .build();
+    }
+
+    private void removeImageFile(RecordUpdateRequest request) {
+        List<Long> deleteIds = request.deleteImages();
+        if (isBlankDeleteImageFile(deleteIds)) {
+            List<RecordsImage> findRecordImages = recordsImageRepository.findByIdInAndStatus(deleteIds, StatusType.ACTIVE);
+            for (RecordsImage findRecordImage : findRecordImages) {
+                findRecordImage.remove();
+            }
+        }
+    }
+
+    private static boolean isBlankDeleteImageFile(List<Long> deleteIds) {
+        return deleteIds != null && !deleteIds.isEmpty();
+    }
+
+    private void modifyAssets(Records findRecord, Records newEntity) {
+        assetsRepository.findByIdAndStatus(findRecord.getAssets().getId(), StatusType.ACTIVE)
+                .ifPresent(assets -> assets.updateRecordBalance(findRecord, newEntity));
+        assetsDetailRepository.findByRecordIdAndStatus(findRecord.getId(), StatusType.ACTIVE)
+                .ifPresent(assetsDetail -> assetsDetail.updateRecordPrice(newEntity));
+    }
+
+    private static AssetsDetail createAssetsDetail(RecordUpdateRequest request, User user, Assets findAssets, Category findCategory, Records findRecord) {
+        return AssetsDetail.builder()
+                .user(user)
+                .assets(findAssets)
+                .priceType(request.priceType())
+                .category(findCategory)
+                .record(findRecord)
+                .type(request.type())
+                .price(request.type().equals(RecordType.DEPOSIT) ? request.price() : -request.price())
+                .active(BooleanYn.Y)
+                .useDate(LocalDate.parse(request.useDate()))
+                .memo(request.memo())
+                .balance(request.type().equals(RecordType.DEPOSIT) ?
+                        findAssets.getBalance() + request.price() :
+                        findAssets.getBalance() - request.price())
                 .build();
     }
 }
