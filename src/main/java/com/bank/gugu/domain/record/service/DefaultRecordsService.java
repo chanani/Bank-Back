@@ -58,8 +58,7 @@ public class DefaultRecordsService implements RecordsService {
     public void addRecord(RecordCreateRequest request, User user, List<MultipartFile> inputFiles) throws IOException {
         Category findCategory = findCategory(request.categoryId());
 
-        Assets findAssets = null;
-        findAssets = findAssets(request.assetsId(), findAssets);
+        Assets findAssets = findAssets(request.assetsId());
         Records newEntity = request.toEntity(user, findCategory, findAssets);
         Records saveRecord = recordsRepository.save(newEntity);
 
@@ -79,19 +78,11 @@ public class DefaultRecordsService implements RecordsService {
     @Override
     @Transactional
     public void deleteRecord(Long recordsId) {
-        // record Entity 조회
-        Records findRecord = recordsRepository.findByIdAndStatus(recordsId, StatusType.ACTIVE)
-                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_RECORDS));
-        // 소프트 삭제
+        Records findRecord = findRecord(recordsId);
+
         findRecord.remove();
 
-        // 자산에 등록 되어있을 경우 내역 삭제 및 금액 차감
-        if (findRecord.getAssets() != null) {
-            assetsRepository.findByIdAndStatus(findRecord.getAssets().getId(), StatusType.ACTIVE)
-                    .ifPresent(findAssets -> findAssets.removeBalance(findRecord));
-            assetsDetailRepository.findByRecordIdAndStatus(findRecord.getId(), StatusType.ACTIVE)
-                    .ifPresent(BaseEntity::remove);
-        }
+        removeAssetsDetail(findRecord);
     }
 
     @Override
@@ -99,14 +90,12 @@ public class DefaultRecordsService implements RecordsService {
     public void updateRecord(RecordUpdateRequest request, Long recordsId, List<MultipartFile> inputFiles, User user) throws IOException {
         Category findCategory = findCategory(request.categoryId());
 
-        Assets findAssets = null;
-        findAssets = findAssets(request.assetsId(), findAssets);
+        Assets findAssets = findAssets(request.assetsId());
 
         Records newEntity = request.toEntity(findCategory, findAssets);
 
         Records findRecord = findRecord(recordsId);
 
-        // 자산 내역 수정
         if (findRecord.getAssets() != null) {
             modifyAssets(findRecord, newEntity);
         } else if (request.assetsId() != null && request.assetsId() > 0) {
@@ -125,8 +114,6 @@ public class DefaultRecordsService implements RecordsService {
             recordsImageRepository.saveAll(recordsImages);
         }
     }
-
-
 
 
     @Override
@@ -203,12 +190,12 @@ public class DefaultRecordsService implements RecordsService {
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
     }
 
-    private Assets findAssets(Long request, Assets findAssets) {
+    private Assets findAssets(Long request) {
         if (isBlank(request)) {
-            findAssets = assetsRepository.findByIdAndStatus(request, StatusType.ACTIVE)
+            return assetsRepository.findByIdAndStatus(request, StatusType.ACTIVE)
                     .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_ASSETS));
         }
-        return findAssets;
+        return null;
     }
 
     private Records findRecord(Long recordsId) {
@@ -294,5 +281,14 @@ public class DefaultRecordsService implements RecordsService {
                         findAssets.getBalance() + request.price() :
                         findAssets.getBalance() - request.price())
                 .build();
+    }
+
+    private void removeAssetsDetail(Records findRecord) {
+        if (findRecord.getAssets() != null) {
+            assetsRepository.findByIdAndStatus(findRecord.getAssets().getId(), StatusType.ACTIVE)
+                    .ifPresent(findAssets -> findAssets.removeBalance(findRecord));
+            assetsDetailRepository.findByRecordIdAndStatus(findRecord.getId(), StatusType.ACTIVE)
+                    .ifPresent(BaseEntity::remove);
+        }
     }
 }
